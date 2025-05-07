@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ryqg.jiaofu.mapper.UserMapper">
+    <insert id="save" parameterType = 'User'>
+        insert into users
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null and userId !='' ">user_id,</if>
+            <if test="userName != null and userName !='' ">user_name,</if>
+            <if test="phone != null and phone !='' ">phone,</if>
+            <if test="password != null and password !='' ">password</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null and userId !='' ">#{userId},</if>
+            <if test="userName != null and userName !='' ">#{userName},</if>
+            <if test="phone != null and phone !='' ">#{phone},</if>
+            <if test="password != null and password !='' ">#{password}</if>
+        </trim>
+    </insert>
+
+    <select id="getUser" resultType="User">
+        select * from users
+        <where>
+            <if test="phone != null and phone != ''">and phone =#{phone}</if>
+        </where>
+    </select>
+</mapper>

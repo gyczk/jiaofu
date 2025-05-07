@@ -1,0 +1,79 @@
+spring: #spring.security.jwt.key
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      password: czk
+      database: 9 # 默认值为0
+  security:
+    jwt:
+      key: 123
+  application:
+    name: jiaofu
+  datasource:
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://127.0.0.1:3306/jiaofu?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&useSSL=false
+      username: root
+      password: root
+      initial-size: 5
+      min-idle: 5
+      max-active: 20
+      max-wait: 60000
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      validation-query: SELECT 1 FROM DUAL
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      filters: stat,wall
+      connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+# Druid监控页面配置
+druid:
+  stat-view-servlet:
+    enabled: true
+    url-pattern: /druid/*
+    login-username: admin
+    login-password: admin
+    reset-enable: false
+  web-stat-filter:
+    enabled: true
+    url-pattern: /*
+    exclusions: '*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*'
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com/ryqg/jiaofu/pojo
+  configuration:
+    map-underscore-to-camel-case: true
+
+security:
+  session:
+    type: jwt # 会话方式 jwt/redis-token
+    access-token-time-to-live: 7200   # 访问令牌 有效期(单位：秒)，默认 2 小时，-1 表示永不过期
+    refresh-token-time-to-live: 604800 # 刷新令牌有效期(单位：秒)，默认 7 天，-1 表示永不过期
+    jwt:
+      secret-key: SecretKey012345678901234567890123456789012345678901234567890123456789 # JWT密钥(HS256算法至少32字符)
+      ttl: 20000
+      tokenName: Authorization
+    redis-token:
+      allow-multi-login: true # 是否允许多设备登录
+  # 安全白名单路径，仅跳过 AuthorizationFilter 过滤器，还是会走 Spring Security 的其他过滤器(CSRF、CORS等)
+  ignore-urls:
+    - /api/v1/auth/login/**       # 登录接口(账号密码登录、手机验证码登录和微信登录)
+    - /api/v1/auth/captcha        # 验证码获取接口
+    - /api/v1/auth/refresh-token  # 刷新令牌接口
+    - /api/v1/auth/logout         # 开放退出登录
+    - /ws/**                      # WebSocket接口
+    - /user/login
+  # 非安全端点路径，完全绕过 Spring Security 的安全控制
+  unsecured-urls:
+#    - ${springdoc.swagger-ui.path}
+    - /doc
+    - /swagger-ui/**
+    - /v3/api-docs/**
+    - /webjars/**
+    - /favicon.ico
+    - /index.html
+
