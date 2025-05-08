@@ -2,9 +2,6 @@ package com.ryqg.jiaofu.constants;
 
 /**
  * 安全模块常量
- *
- * @author Ray.Hao
- * @since 2023/11/24
  */
 public interface SecurityConstants {
 

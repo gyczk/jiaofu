@@ -11,9 +11,6 @@ import org.springframework.stereotype.Component;
  * 安全模块配置属性类
  *
  * <p>映射 application.yml 中 security 前缀的安全相关配置</p>
- *
- * @author Ray.Hao
- * @since 2024/4/18
  */
 @Data
 @Component

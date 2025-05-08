@@ -15,8 +15,6 @@ import java.io.Serializable;
  * B**** 系统执行出错
  * C**** 调用第三方服务出错
  *
- * @author Ray.Hao
- * @since 2020/6/23
  **/
 @AllArgsConstructor
 @NoArgsConstructor

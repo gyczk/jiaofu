@@ -12,9 +12,6 @@ import org.springframework.stereotype.Service;
 
 /**
  * 系统用户认证 DetailsService
- *
- * @author Ray.Hao
- * @since 2021/10/19
  */
 @Service
 @RequiredArgsConstructor
