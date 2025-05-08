@@ -1,8 +1,8 @@
 package com.ryqg.jiaofu.utils;
 
 import cn.hutool.json.JSONUtil;
-import com.ryqg.jiaofu.config.Result;
-import com.ryqg.jiaofu.config.ResultCode;
+import com.ryqg.jiaofu.common.Result;
+import com.ryqg.jiaofu.common.ResultCode;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

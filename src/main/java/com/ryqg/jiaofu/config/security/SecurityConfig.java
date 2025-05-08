@@ -3,6 +3,10 @@ package com.ryqg.jiaofu.config.security;
 
 import cn.hutool.core.util.ArrayUtil;
 import com.ryqg.jiaofu.config.property.SecurityProperties;
+import com.ryqg.jiaofu.config.security.filter.JwtTokenOncePerRequestFilter;
+import com.ryqg.jiaofu.config.security.handler.AnonymousAuthenticationHandler;
+import com.ryqg.jiaofu.config.security.handler.CustomerAccessDeniedHandler;
+import com.ryqg.jiaofu.config.security.handler.LoginFailureHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -111,9 +115,5 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    public static void main(String[] args) {
-        System.out.println(new BCryptPasswordEncoder().encode("czk"));
     }
 }

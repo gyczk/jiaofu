@@ -1,6 +1,6 @@
 package com.ryqg.jiaofu.utils;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -15,10 +15,11 @@ import java.util.concurrent.TimeUnit;
  * Redis工具类
  */
 @Component
+@RequiredArgsConstructor
 public class RedisUtil {
 
-    @Autowired //将序列化配置类RedisConfig里面的bean注入到这里
-    private RedisTemplate<String, Object> redisTemplate;
+    //将序列化配置类RedisConfig里面的bean注入到这里
+    private final RedisTemplate<String, Object> redisTemplate;
 
     /****************** common start ****************/
     /**
@@ -560,13 +561,4 @@ public class RedisUtil {
             return null;
         }
     }
-
-    public static void main(String[] args) {
-        RedisUtil redisUtil = new RedisUtil();
-        boolean b = redisUtil.hasKey("token_eyJhbGciOiJIUzUxMiJ9.eyJMT0dJTl9JTkZPIjoie1wiYWNjb3VudE5vbkV4cGlyZWRcIjp0cnVlLFwiYWNjb3VudE5vbkxvY2tlZFwiOnRydWUsXCJhdXRob3JpdGllc1wiOltdLFwiY3JlZGVudGlhbHNOb25FeHBpcmVkXCI6dHJ1ZSxcImVuYWJsZWRcIjp0cnVlLFwicGFzc3dvcmRcIjpcIiQyYSQxMCRjMFhDN2lYVUVxeWZ2V0xoRDBWbi9lVmlUdHY1WHk4ZjU0dzIya25tS1JPYkxORldKZEdDMlwiLFwidXNlclwiOntcImNvaW5cIjo5OTkuMCxcImRvY19udW1cIjowLFwiZmFuc1wiOjEwMCxcInBhc3N3b3JkXCI6XCIkMmEkMTAkYzBYQzdpWFVFcXlmdldMaEQwVm4vZVZpVHR2NVh5OGY1NHcyMmtubUtST2JMTkZXSmRHQzJcIixcInBob25lXCI6XCIxMjNcIixcInVzZXJJZFwiOlwiMTIzXCIsXCJ1c2VyTmFtZVwiOlwiY3prXCJ9LFwidXNlcm5hbWVcIjpcImN6a1wifSIsInN1YiI6IjEyMyIsImlhdCI6MTc0NjU3MTQwOCwiZXhwIjoxNzQ2NTcxNDA4fQ.O3DBRjHnLFILfUBFvUsgwOePlSYTWHqLKDlTR6QCVo29B64ec9ibesz0Ocuf3UGoCJ03IhaxsVcnGU6LUbT8Nw");
-
-        System.out.println(b);
-    }
-
-
 }

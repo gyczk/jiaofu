@@ -1,9 +1,9 @@
 package com.ryqg.jiaofu.entrance.service;
 
-import com.ryqg.jiaofu.config.ResultCode;
-import com.ryqg.jiaofu.config.security.AuthenticationToken;
+import com.ryqg.jiaofu.common.ResultCode;
+import com.ryqg.jiaofu.config.security.token.AuthenticationToken;
 import com.ryqg.jiaofu.config.security.token.TokenManager;
-import com.ryqg.jiaofu.exception.InvalidTokenException;
+import com.ryqg.jiaofu.common.exception.InvalidTokenException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;

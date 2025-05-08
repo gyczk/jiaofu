@@ -1,7 +1,6 @@
 package com.ryqg.jiaofu.config.security.token;
 
 
-import com.ryqg.jiaofu.config.security.AuthenticationToken;
 import org.springframework.security.core.Authentication;
 
 /**

@@ -3,10 +3,10 @@ package com.ryqg.jiaofu.utils;
 import cn.hutool.json.JSONObject;
 import cn.hutool.jwt.JWT;
 import cn.hutool.jwt.JWTUtil;
-import com.ryqg.jiaofu.config.ResultCode;
+import com.ryqg.jiaofu.common.ResultCode;
 import com.ryqg.jiaofu.config.security.UserDetailsImpl;
-import com.ryqg.jiaofu.constants.SecurityConstants;
-import com.ryqg.jiaofu.exception.InvalidTokenException;
+import com.ryqg.jiaofu.common.constants.SecurityConstants;
+import com.ryqg.jiaofu.common.exception.InvalidTokenException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

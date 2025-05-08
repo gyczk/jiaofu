@@ -1,7 +1,7 @@
 package com.ryqg.jiaofu.entrance.controller;
 
-import com.ryqg.jiaofu.config.Result;
-import com.ryqg.jiaofu.config.security.AuthenticationToken;
+import com.ryqg.jiaofu.common.Result;
+import com.ryqg.jiaofu.config.security.token.AuthenticationToken;
 import com.ryqg.jiaofu.entrance.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

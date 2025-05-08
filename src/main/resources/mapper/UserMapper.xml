@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.ryqg.jiaofu.mapper.UserMapper">
+<mapper namespace="com.ryqg.jiaofu.business.mapper.UserMapper">
     <insert id="save" parameterType = 'User'>
         insert into users
         <trim prefix="(" suffix=")" suffixOverrides=",">
