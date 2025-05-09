@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
 /**
  * 安全模块配置属性类
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Component;
  * <p>映射 application.yml 中 security 前缀的安全相关配置</p>
  */
 @Data
-@Component
 @ConfigurationProperties(prefix = "security")
 public class SecurityProperties {
 
@@ -28,13 +26,6 @@ public class SecurityProperties {
      */
     @NotEmpty
     private String[] ignoreUrls;
-
-    /**
-     * 非安全端点路径（允许匿名访问的API）
-     * <p>示例值：/doc.html, /v3/api-docs/**
-     */
-    @NotEmpty
-    private String[] unsecuredUrls;
 
     /**
      * 会话配置嵌套类

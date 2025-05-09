@@ -22,8 +22,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.stream.Stream;
 
 
 @Component
@@ -56,10 +54,7 @@ public class JwtTokenOncePerRequestFilter extends OncePerRequestFilter {
 
     // 判断请求路径是否在白名单中
     private boolean isWhitelisted(String uri) {
-        String[] whiteArray =
-                Stream.of(securityProperties.getUnsecuredUrls(),securityProperties.getIgnoreUrls())
-                        .flatMap(Arrays::stream).toArray(String[]::new);
-        for (String pattern : whiteArray) {
+        for (String pattern : securityProperties.getIgnoreUrls()) {
             if (pattern.endsWith("/**")) {
                 // 处理通配符路径
                 String basePattern = pattern.substring(0, pattern.length() - 3);
@@ -86,7 +81,7 @@ public class JwtTokenOncePerRequestFilter extends OncePerRequestFilter {
         }
         // redis进行校验
         UserDetailsImpl userDetails = TokenToUserDetailsUtil.getUserDetails(token);
-        String userId = userDetails.getUser().getUserId();
+        String userId = userDetails.getUser().getId();
         if (!tokenManager.validateToken(token)) {
             throw new CustomerAuthenticationException(ResultCode.ACCESS_TOKEN_INVALID);
         }

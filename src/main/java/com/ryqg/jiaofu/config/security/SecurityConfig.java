@@ -15,7 +15,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -87,21 +86,6 @@ public class SecurityConfig {
                 // 验证和解析过滤器
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
-    }
-
-    /**
-     * 配置Web安全自定义器，以忽略特定请求路径的安全性检查。
-     * <p>
-     * 该配置用于指定哪些请求路径不经过Spring Security过滤器链。通常用于静态资源文件。
-     */
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> {
-            String[] unsecuredUrls = securityProperties.getUnsecuredUrls();
-            if (ArrayUtil.isNotEmpty(unsecuredUrls)) {
-                web.ignoring().requestMatchers(unsecuredUrls);
-            }
-        };
     }
 
     /**

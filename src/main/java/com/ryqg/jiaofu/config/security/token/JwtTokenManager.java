@@ -53,7 +53,7 @@ public class JwtTokenManager implements TokenManager {
         storeTokenInRedis(accessToken, refreshToken, userDetails);
 
         // 单设备登录控制
-        handleSingleDeviceLogin(userDetails.getUser().getUserId(), accessToken, refreshToken);
+        handleSingleDeviceLogin(userDetails.getUser().getId(), accessToken, refreshToken);
 
         return AuthenticationToken.builder()
                 .accessToken(accessToken)
@@ -164,7 +164,7 @@ public class JwtTokenManager implements TokenManager {
             throw new InvalidTokenException(ResultCode.REFRESH_TOKEN_INVALID);
         }
         UserDetailsImpl userDetails = TokenToUserDetailsUtil.getUserDetails(refreshToken);
-        String userId = userDetails.getUser().getUserId();
+        String userId = userDetails.getUser().getId();
 
         Authentication authentication = parseToken(refreshToken);
         String newAccessToken = generateToken(authentication, accessTokenLiveTime);
