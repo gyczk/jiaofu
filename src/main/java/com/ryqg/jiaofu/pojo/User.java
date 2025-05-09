@@ -1,10 +1,14 @@
 package com.ryqg.jiaofu.pojo;
 
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.ryqg.jiaofu.business.common.BaseModel;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class User {
-    private String userId;
+@TableName("users")
+public class User extends BaseModel {
     private String userName;
     private String phone;
     private String password;

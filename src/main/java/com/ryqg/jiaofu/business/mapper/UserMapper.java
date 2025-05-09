@@ -1,13 +1,10 @@
 package com.ryqg.jiaofu.business.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.ryqg.jiaofu.pojo.User;
 import org.apache.ibatis.annotations.Mapper;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
 @Mapper
-public interface UserMapper {
-
+public interface UserMapper extends BaseMapper<User> {
     User getUser(String phone);
-
-    int save(User user);
 }
