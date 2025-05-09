@@ -5,9 +5,12 @@ spring: #spring.security.jwt.key
       port: 6379
       password: czk
       database: 9 # 默认值为0
-  security:
-    jwt:
-      key: 123
+      lettuce:
+        pool:
+          max-active: 10  # 允许最大连接数，默认8（负值表示没有限制），推荐值：大于cpu * 2，通常为(cpu * 2) + 2
+          max-idle: 8     # 最大空闲连接数，默认8，推荐值：cpu * 2
+          min-idle: 0     # 最小空闲连接数，默认0
+          max-wait: 5s    # 连接用完时，新的请求等待时间(s秒、ms毫秒)，超过该时间抛出异常，默认-1（负值表示没有限制）
   application:
     name: jiaofu
   datasource:
@@ -28,25 +31,35 @@ spring: #spring.security.jwt.key
       test-on-return: false
       pool-prepared-statements: true
       max-pool-prepared-statement-per-connection-size: 20
-      filters: stat,wall
+      filters: stat,wall,slf4j
       connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
-# Druid监控页面配置
-druid:
-  stat-view-servlet:
-    enabled: true
-    url-pattern: /druid/*
-    login-username: admin
-    login-password: admin
-    reset-enable: false
-  web-stat-filter:
-    enabled: true
-    url-pattern: /*
-    exclusions: '*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*'
-mybatis:
+      web-stat-filter:
+        # 是否启用StatFilter默认值true
+        enabled: true
+        # 添加过滤规则
+        url-pattern: /*
+        # 忽略过滤的格式
+        exclusions: /druid/*,*.js,*.gif,*.jpg,*.png,*.css,*.ico
+      stat-view-servlet:
+        # 是否启用StatViewServlet默认值true
+        enabled: true
+        # 访问路径为/druid时，跳转到StatViewServlet
+        url-pattern: /druid/*
+        # 是否能够重置数据
+        reset-enable: false
+        # 需要账号密码才能访问控制台，默认为root
+        login-username: druid
+        login-password: druid
+        # IP白名单
+        allow: 127.0.0.1
+        # IP黑名单（共同存在时，deny优先于allow）
+        deny:
+mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
-  type-aliases-package: com/ryqg/jiaofu/pojo
+  type-aliases-package: com.ryqg.jiaofu.pojo
   configuration:
     map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 security:
   session:
@@ -62,14 +75,10 @@ security:
   # 安全白名单路径，仅跳过 AuthorizationFilter 过滤器，还是会走 Spring Security 的其他过滤器(CSRF、CORS等)
   ignore-urls:
     - /api/v1/auth/login/**       # 登录接口(账号密码登录、手机验证码登录和微信登录)
-    - /api/v1/auth/captcha        # 验证码获取接口
     - /api/v1/auth/refresh-token  # 刷新令牌接口
     - /api/v1/auth/logout         # 开放退出登录
     - /ws/**                      # WebSocket接口
-    - /user/login
-  # 非安全端点路径，完全绕过 Spring Security 的安全控制
-  unsecured-urls:
-#    - ${springdoc.swagger-ui.path}
+    - /druid/**
     - /doc
     - /swagger-ui/**
     - /v3/api-docs/**
