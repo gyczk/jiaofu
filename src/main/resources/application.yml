@@ -56,7 +56,7 @@ spring: #spring.security.jwt.key
         deny:
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
-  type-aliases-package: com.ryqg.jiaofu.pojo
+  type-aliases-package: com.ryqg.jiaofu.domain.pojo
   configuration:
     map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

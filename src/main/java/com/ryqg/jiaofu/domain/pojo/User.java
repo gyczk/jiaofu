@@ -1,4 +1,4 @@
-package com.ryqg.jiaofu.pojo;
+package com.ryqg.jiaofu.domain.pojo;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.ryqg.jiaofu.business.common.BaseModel;
