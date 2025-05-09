@@ -1,6 +1,6 @@
 package com.ryqg.jiaofu.config.security;
 
-import com.ryqg.jiaofu.pojo.User;
+import com.ryqg.jiaofu.domain.pojo.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -29,6 +29,10 @@ public class Result<T> implements Serializable {
         return result;
     }
 
+    public static <T> Result<T> success(ResultCode resultCode) {
+        return result(resultCode.getCode(), resultCode.getMsg(), null);
+    }
+
     public static <T> Result<T> failed() {
         return result(ResultCode.SYSTEM_ERROR.getCode(), ResultCode.SYSTEM_ERROR.getMsg(), null);
     }

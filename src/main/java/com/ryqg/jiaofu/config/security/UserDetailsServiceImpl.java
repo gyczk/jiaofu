@@ -1,7 +1,7 @@
 package com.ryqg.jiaofu.config.security;
 
 import com.ryqg.jiaofu.business.mapper.UserMapper;
-import com.ryqg.jiaofu.pojo.User;
+import com.ryqg.jiaofu.domain.pojo.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;

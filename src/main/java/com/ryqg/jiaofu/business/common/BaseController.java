@@ -2,6 +2,8 @@ package com.ryqg.jiaofu.business.common;
 
 import com.ryqg.jiaofu.common.Result;
 import com.ryqg.jiaofu.common.ResultCode;
+import com.ryqg.jiaofu.domain.dto.BaseDTO;
+import com.ryqg.jiaofu.domain.vo.BaseVO;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,15 +11,17 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RequiredArgsConstructor
-public abstract class BaseController<M extends IBaseService<T>,T extends BaseModel> {
+public abstract class BaseController<M extends IBaseService<DTO, VO>,
+        DTO extends BaseDTO,
+        VO extends BaseVO> {
     @Resource
     protected M baseService;
 
 
     // 根据ID查询
     @GetMapping("/{id}")
-    public Result<T> getById(@PathVariable String id) {
-        T t = baseService.findById(id);
+    public Result<BaseVO> getById(@PathVariable String id) {
+        BaseVO t = baseService.findById(id);
         if (t == null) {
             return Result.failed(ResultCode.DATA_NOT_EXIST);
         }
@@ -26,8 +30,8 @@ public abstract class BaseController<M extends IBaseService<T>,T extends BaseMod
 
     // 创建
     @PostMapping
-    public Result<T> create(@RequestBody T t) {
-        int flag = baseService.save(t);
+    public Result<Void> create(@RequestBody DTO dto) {
+        int flag = baseService.save(dto);
         if (flag != 1) {
             return Result.failed(ResultCode.DATA_INSERT_ERROR);
         }
@@ -35,9 +39,9 @@ public abstract class BaseController<M extends IBaseService<T>,T extends BaseMod
     }
 
     // 更新
-    @PutMapping("/{id}")
-    public Result<T> update(@RequestBody T t) {
-        int flag = baseService.update(t);
+    @PutMapping
+    public Result<Void> update(@RequestBody DTO dto) {
+        int flag = baseService.update(dto);
         if (flag != 1) {
             return Result.failed(ResultCode.DATA_UPDATE_ERROR);
         }
