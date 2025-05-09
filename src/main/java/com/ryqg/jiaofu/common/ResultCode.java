@@ -21,6 +21,11 @@ public enum ResultCode implements IResultCode, Serializable {
 
     SUCCESS("00000", "一切ok"),
 
+    DATA_NOT_EXIST("00001", "查询数据不存在"),
+    DATA_INSERT_ERROR("00002", "保存数据失败"),
+    DATA_UPDATE_ERROR("00003", "更新数据失败"),
+    DATA_DELETE_ERROR("00004", "删除数据失败"),
+
     /** 一级宏观错误码  */
     USER_ERROR("A0001", "用户端错误"),
 
