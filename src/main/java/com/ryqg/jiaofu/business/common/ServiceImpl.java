@@ -39,4 +39,5 @@ public abstract class ServiceImpl<M extends BaseMapper<Entity>, C extends BaseCo
     public int delete(String id) {
         return baseMapper.deleteById(id);
     }
+
 }

@@ -7,10 +7,4 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface UserConverter extends BaseConverter<User, UserDTO, UserVO>{
-//    @Override
-//    User toEntity(UserDTO userDTO);
-//
-//    @Override
-//    UserDTO toDTO(User user);
-
 }

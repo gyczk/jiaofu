@@ -1,5 +1,6 @@
 package com.ryqg.jiaofu.business.common;
 
+import cn.hutool.db.Page;
 import com.ryqg.jiaofu.common.Result;
 import com.ryqg.jiaofu.common.ResultCode;
 import com.ryqg.jiaofu.domain.dto.BaseDTO;
@@ -20,12 +21,12 @@ public abstract class BaseController<M extends IBaseService<DTO, VO>,
 
     // 根据ID查询
     @GetMapping("/{id}")
-    public Result<BaseVO> getById(@PathVariable String id) {
-        BaseVO t = baseService.findById(id);
-        if (t == null) {
+    public Result<VO> getById(@PathVariable String id) {
+        VO vo = baseService.findById(id);
+        if (vo == null) {
             return Result.failed(ResultCode.DATA_NOT_EXIST);
         }
-        return Result.success(t);
+        return Result.success(vo);
     }
 
     // 创建
@@ -57,4 +58,11 @@ public abstract class BaseController<M extends IBaseService<DTO, VO>,
         }
         return Result.success();
     }
+
+    @GetMapping("/page")
+    public Result<PageResult<VO>> page(@RequestBody(required = false) Page pageParam, @RequestBody(required = false) DTO dto){
+        PageResult<VO> pageResult = baseService.pageQuery(pageParam,dto);
+        return Result.success(pageResult);
+    }
+
 }
