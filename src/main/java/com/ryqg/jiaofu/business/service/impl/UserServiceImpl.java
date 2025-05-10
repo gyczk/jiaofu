@@ -38,16 +38,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserConverter,User,
         if (dto != null) {
             queryWrapper.lambda().like(StringUtils.isNotBlank(dto.getUserName()), User::getUserName, dto.getUserName())
                     .eq(StringUtils.isNotBlank(dto.getPhone()), User::getPhone, dto.getPhone());
-            Arrays.stream(pageParam.getOrders()).forEach(item -> {
-                queryWrapper.orderBy(true, Direction.ASC.equals(item.getDirection()), item.getField());
-            });
-        }
+            }
+        Arrays.stream(pageParam.getOrders()).forEach(item -> {
+                    queryWrapper.orderBy(true, Direction.ASC.equals(item.getDirection()), item.getField());
+        });
         page = baseMapper.selectPage(page,queryWrapper);
-        PageResult<UserVO> result = baseConverter.toPageResult(page);
-        // 验证输出
-        System.out.println("Page: " + result.getPageNo());
-        System.out.println("PageSize: " + result.getPageSize()); // 确认此处有值
-        System.out.println("Total: " + result.getTotal());
-        return result;
+        return baseConverter.toPageResult(page);
     }
 }
