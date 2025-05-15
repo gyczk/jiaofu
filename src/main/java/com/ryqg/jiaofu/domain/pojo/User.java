@@ -7,12 +7,17 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@TableName("users")
+@TableName("sys_users")
 public class User extends BaseModel {
     private String userName;
+
     private String phone;
+
     private String password;
+
     private int doc_num;
+
     private int fans;
+
     private float coin;
 }

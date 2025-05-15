@@ -1,3 +1,4 @@
+
 spring: #spring.security.jwt.key
   data:
     redis:
@@ -85,4 +86,5 @@ security:
     - /webjars/**
     - /favicon.ico
     - /index.html
-
+server:
+  port: 8080

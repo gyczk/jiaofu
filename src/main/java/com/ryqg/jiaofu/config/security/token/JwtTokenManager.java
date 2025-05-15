@@ -7,11 +7,11 @@ import cn.hutool.jwt.JWTPayload;
 import cn.hutool.jwt.JWTUtil;
 import com.alibaba.fastjson.JSON;
 import com.ryqg.jiaofu.common.ResultCode;
-import com.ryqg.jiaofu.config.property.SecurityProperties;
-import com.ryqg.jiaofu.config.security.UserDetailsImpl;
 import com.ryqg.jiaofu.common.constants.RedisConstants;
 import com.ryqg.jiaofu.common.constants.SecurityConstants;
 import com.ryqg.jiaofu.common.exception.InvalidTokenException;
+import com.ryqg.jiaofu.config.property.SecurityProperties;
+import com.ryqg.jiaofu.config.security.UserDetailsImpl;
 import com.ryqg.jiaofu.utils.RedisUtil;
 import com.ryqg.jiaofu.utils.TokenToUserDetailsUtil;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -65,14 +65,14 @@ public class JwtTokenManager implements TokenManager {
 
     private void handleSingleDeviceLogin(String userId, String token, String refreshToken) {
         Boolean allowMultiLogin = securityProperties.getSession().getRedisToken().getAllowMultiLogin();
-        String tokenKey = formatRedisKey(userId, RedisConstants.Auth.USER_ACCESS_TOKEN);
-        String refreshKey = formatRedisKey(userId, RedisConstants.Auth.USER_REFRESH_TOKEN);
+        String tokenKey = formatRedisKey(RedisConstants.Auth.USER_ACCESS_TOKEN, userId);
+        String refreshKey = formatRedisKey(RedisConstants.Auth.USER_REFRESH_TOKEN, userId);
         if (!allowMultiLogin) {
             String oldAccessToken = (String) redisUtil.get(tokenKey);
-            redisUtil.del(formatRedisKey(oldAccessToken, RedisConstants.Auth.ACCESS_TOKEN_USER));
+            redisUtil.del(formatRedisKey(RedisConstants.Auth.ACCESS_TOKEN_USER, oldAccessToken));
 
             String oldRefreshToken = (String) redisUtil.get(refreshKey);
-            redisUtil.del(formatRedisKey(oldRefreshToken, RedisConstants.Auth.REFRESH_TOKEN_USER));
+            redisUtil.del(formatRedisKey(RedisConstants.Auth.REFRESH_TOKEN_USER, oldRefreshToken));
 
             redisUtil.set(tokenKey, token, accessTokenLiveTime);
             redisUtil.set(refreshKey, refreshToken, refreshTokenLiveTime);
@@ -82,8 +82,8 @@ public class JwtTokenManager implements TokenManager {
 
     private void storeTokenInRedis(String accessToken, String refreshToken, UserDetailsImpl userDetails) {
         // token
-        redisUtil.set(formatRedisKey(accessToken, RedisConstants.Auth.ACCESS_TOKEN_USER), userDetails, accessTokenLiveTime);
-        redisUtil.set(formatRedisKey(refreshToken, RedisConstants.Auth.REFRESH_TOKEN_USER), userDetails, refreshTokenLiveTime);
+        redisUtil.set(formatRedisKey(RedisConstants.Auth.ACCESS_TOKEN_USER, accessToken), userDetails, accessTokenLiveTime);
+        redisUtil.set(formatRedisKey(RedisConstants.Auth.REFRESH_TOKEN_USER, refreshToken), userDetails, refreshTokenLiveTime);
     }
 
     private String generateToken(Authentication authentication, int ttl) {
@@ -127,7 +127,7 @@ public class JwtTokenManager implements TokenManager {
      */
     @Override
     public boolean validateToken(String token) {
-        return redisUtil.hasKey(formatRedisKey(token, RedisConstants.Auth.ACCESS_TOKEN_USER));
+        return redisUtil.hasKey(formatRedisKey(RedisConstants.Auth.ACCESS_TOKEN_USER, token));
         /*JWT jwt = JWTUtil.parseToken(token);
         // 检查 Token 是否有效(验签 + 是否过期)
         boolean isValid = jwt.setKey(secretKey).validate(0);
@@ -147,7 +147,7 @@ public class JwtTokenManager implements TokenManager {
 
     @Override
     public boolean validateRefreshToken(String refreshToken) {
-        return redisUtil.hasKey(formatRedisKey(refreshToken, RedisConstants.Auth.REFRESH_TOKEN_USER));
+        return redisUtil.hasKey(formatRedisKey(RedisConstants.Auth.REFRESH_TOKEN_USER, refreshToken));
     }
 
     /**
@@ -172,11 +172,11 @@ public class JwtTokenManager implements TokenManager {
         // 删除旧token,单用户模式删,多用户不删有个问题：恶意登陆
         Boolean allowMultiLogin = securityProperties.getSession().getRedisToken().getAllowMultiLogin();
         if (!allowMultiLogin) {
-            String oldToken = (String)redisUtil.get(formatRedisKey(userId, RedisConstants.Auth.USER_ACCESS_TOKEN));
-            redisUtil.del(formatRedisKey(oldToken, RedisConstants.Auth.ACCESS_TOKEN_USER));
-            redisUtil.set(formatRedisKey(userId, RedisConstants.Auth.USER_ACCESS_TOKEN), newAccessToken, accessTokenLiveTime);
+            String oldToken = (String) redisUtil.get(formatRedisKey(RedisConstants.Auth.USER_ACCESS_TOKEN, userId));
+            redisUtil.del(formatRedisKey(RedisConstants.Auth.ACCESS_TOKEN_USER, oldToken));
+            redisUtil.set(formatRedisKey(RedisConstants.Auth.USER_ACCESS_TOKEN, userId), newAccessToken, accessTokenLiveTime);
         }
-        redisUtil.set(formatRedisKey(newAccessToken, RedisConstants.Auth.ACCESS_TOKEN_USER), userDetails, accessTokenLiveTime);
+        redisUtil.set(formatRedisKey(RedisConstants.Auth.ACCESS_TOKEN_USER, newAccessToken), userDetails, accessTokenLiveTime);
 
         return AuthenticationToken.builder()
                 .accessToken(newAccessToken)
@@ -195,10 +195,10 @@ public class JwtTokenManager implements TokenManager {
     /**
      * 格式化访问令牌的 Redis 键
      *
-     * @param content content
+     * @param params params
      * @return 格式化后的 Redis 键
      */
-    private String formatRedisKey(String content, String format) {
-        return StrUtil.format(format, content);
+    private String formatRedisKey(String format, Object... params) {
+        return StrUtil.format(format, params);
     }
 }

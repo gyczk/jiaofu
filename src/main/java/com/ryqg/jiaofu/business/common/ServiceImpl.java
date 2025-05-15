@@ -25,7 +25,6 @@ public abstract class ServiceImpl<M extends BaseMapper<Entity>, C extends BaseCo
     @Override
     public int save(DTO dto) {
         Entity entity = baseConverter.toEntity(dto);
-        entity.initNew();
         return baseMapper.insert(entity);
     }
 

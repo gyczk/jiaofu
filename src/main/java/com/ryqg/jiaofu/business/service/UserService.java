@@ -8,4 +8,5 @@ import org.springframework.stereotype.Service;
 @Service
 public interface UserService extends IBaseService<UserDTO, UserVO> {
 
+    UserVO getMe();
 }
