@@ -5,17 +5,16 @@ import com.ryqg.jiaofu.common.Result;
 import com.ryqg.jiaofu.common.ResultCode;
 import com.ryqg.jiaofu.domain.dto.BaseDTO;
 import com.ryqg.jiaofu.domain.vo.BaseVO;
-import jakarta.annotation.Resource;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
-@RequiredArgsConstructor
 public abstract class BaseController<M extends IBaseService<DTO, VO>,
         DTO extends BaseDTO,
         VO extends BaseVO> {
-    @Resource
+
+    @Autowired
     protected M baseService;
 
 

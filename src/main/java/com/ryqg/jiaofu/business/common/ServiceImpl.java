@@ -4,15 +4,16 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.ryqg.jiaofu.common.converter.BaseConverter;
 import com.ryqg.jiaofu.domain.dto.BaseDTO;
 import com.ryqg.jiaofu.domain.vo.BaseVO;
-import jakarta.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 public abstract class ServiceImpl<M extends BaseMapper<Entity>, C extends BaseConverter<Entity,DTO,VO>,Entity
         extends BaseModel,DTO extends BaseDTO,VO extends BaseVO> implements IBaseService<DTO,VO>{
 
-    @Resource
+    @Autowired
     protected M baseMapper;
 
-    @Resource
+    @Autowired
     protected C baseConverter;
 
 
@@ -22,18 +23,21 @@ public abstract class ServiceImpl<M extends BaseMapper<Entity>, C extends BaseCo
         return baseConverter.toVO(entity);
     }
 
+    @Transactional
     @Override
     public int save(DTO dto) {
         Entity entity = baseConverter.toEntity(dto);
         return baseMapper.insert(entity);
     }
 
+    @Transactional
     @Override
     public int update(DTO dto) {
         Entity entity = baseConverter.toEntity(dto);
         return baseMapper.updateById(entity);
     }
 
+    @Transactional
     @Override
     public int delete(String id) {
         return baseMapper.deleteById(id);
