@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ryqg.jiaofu.business.common.PageResult;
 import com.ryqg.jiaofu.business.common.ServiceImpl;
 import com.ryqg.jiaofu.business.mapper.UserMapper;
+import com.ryqg.jiaofu.business.service.UserRoleService;
 import com.ryqg.jiaofu.business.service.UserService;
 import com.ryqg.jiaofu.common.converter.UserConverter;
 import com.ryqg.jiaofu.config.security.UserDetailsImpl;
@@ -20,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -27,10 +29,13 @@ import java.util.Arrays;
 public class UserServiceImpl extends ServiceImpl<UserMapper, UserConverter,User, UserDTO, UserVO> implements UserService {
     private final PasswordEncoder passwordEncoder;
 
+    private final UserRoleService userRoleService;
+
     @Override
-    public int save(UserDTO userDTO) {
-        userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        return super.save(userDTO);
+    public int update(UserDTO userDTO) {
+        List<String> roleIds = userDTO.getRoleIds();
+        userRoleService.saveUserRoles(userDTO.getId(), roleIds);
+        return super.update(userDTO);
     }
 
     @Override

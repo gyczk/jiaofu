@@ -16,13 +16,13 @@ public class Role extends BaseModel {
     private String code;
 
     // 显示顺序
-    private String sort;
+    private Integer sort;
 
     // 角色状态(1-正常 0-停用)
-    private String status;
+    private Integer status;
 
     // 数据权限(1-所有数据 2-部门及子部门数据 3-本部门数据 4-本人数据)
-    private String dataScope;
+    private Integer dataScope;
 
     // 创建人 ID
     private String createBy;
@@ -31,5 +31,5 @@ public class Role extends BaseModel {
     private String updateBy;
 
     // 逻辑删除标识(0-未删除 1-已删除)
-    private String isDeleted;
+    private Integer isDeleted;
 }

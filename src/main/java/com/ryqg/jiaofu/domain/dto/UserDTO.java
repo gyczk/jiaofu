@@ -3,11 +3,11 @@ package com.ryqg.jiaofu.domain.dto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.List;
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class UserDTO extends BaseDTO{
-    private String id;
-
     private String userName;
 
     private String password;
@@ -19,4 +19,6 @@ public class UserDTO extends BaseDTO{
     private int fans;
 
     private float coin;
+
+    private List<String> roleIds;
 }

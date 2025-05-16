@@ -31,8 +31,9 @@ public enum ResultCode implements IResultCode, Serializable {
 
     /** 二级宏观错误码  */
     USER_REGISTRATION_ERROR("A0100", "用户注册错误"),
-    USER_NOT_AGREE_PRIVACY_AGREEMENT("A0101", "用户未同意隐私协议"),
-    REGISTRATION_COUNTRY_OR_REGION_RESTRICTED("A0102", "注册国家或地区受限"),
+    USER_REGISTRATION_SUCCESS("A0101", "用户注册成功"),
+    USER_NOT_AGREE_PRIVACY_AGREEMENT("A0102", "用户未同意隐私协议"),
+    REGISTRATION_COUNTRY_OR_REGION_RESTRICTED("A0103", "注册国家或地区受限"),
 
     USERNAME_VERIFICATION_FAILED("A0110", "用户名校验失败"),
     USERNAME_ALREADY_EXISTS("A0111", "用户名已存在"),

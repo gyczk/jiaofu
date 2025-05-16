@@ -1,15 +1,20 @@
 package com.ryqg.jiaofu.entrance.service;
 
+import com.ryqg.jiaofu.business.mapper.UserMapper;
 import com.ryqg.jiaofu.common.ResultCode;
+import com.ryqg.jiaofu.common.converter.UserConverter;
 import com.ryqg.jiaofu.common.exception.InvalidTokenException;
 import com.ryqg.jiaofu.config.security.token.AuthenticationToken;
 import com.ryqg.jiaofu.config.security.token.TokenManager;
+import com.ryqg.jiaofu.domain.dto.UserRegisterDTO;
+import com.ryqg.jiaofu.domain.pojo.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,6 +25,12 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
 
     private final TokenManager tokenManager;
+
+    private final UserMapper userMapper;
+
+    private final UserConverter userConverter;
+
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public AuthenticationToken login(String phone, String password) {
@@ -41,5 +52,11 @@ public class AuthServiceImpl implements AuthService {
         }
         // 刷新令牌有效，生成新的访问令牌
         return tokenManager.refreshToken(refreshToken);
+    }
+
+    @Override
+    public int save(UserRegisterDTO userRegisterDTO) {
+        User user = userConverter.toEntity(userRegisterDTO,passwordEncoder);
+        return userMapper.insert(user);
     }
 }

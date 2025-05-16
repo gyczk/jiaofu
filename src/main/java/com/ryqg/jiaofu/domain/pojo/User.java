@@ -9,6 +9,8 @@ import lombok.EqualsAndHashCode;
 @Data
 @TableName("sys_users")
 public class User extends BaseModel {
+    private String id;
+
     private String userName;
 
     private String phone;
