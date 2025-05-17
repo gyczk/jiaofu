@@ -21,20 +21,20 @@ spring: #spring.security.jwt.key
       url: jdbc:mysql://117.72.56.61:3306/jiaofu?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&autoReconnect=true&allowMultiQueries=true
       username: jiaofu
       password: QAZ123_abc!
-      initial-size: 5
-      min-idle: 5
-      max-active: 20
-      max-wait: 60000
+      initialSize: 5
+      minIdle: 5
+      maxActive: 20
+      maxWait: 60000
       testWhileIdle: true
-      time-between-eviction-runs-millis: 60000
-      min-evictable-idle-time-millis: 300000
-      validation-query: SELECT 1 FROM DUAL
-      test-on-borrow: false
-      test-on-return: false
-      pool-prepared-statements: true
-      max-pool-prepared-statement-per-connection-size: 20
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: SELECT 1 FROM DUAL
+      testOnBorrow: false
+      testOnReturn: false
+      poolPreparedStatements: true
+      maxPoolPreparedStatementPerConnectionSize: 20
       filters: stat,wall,slf4j
-      connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+      connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
       web-stat-filter:
         # 是否启用StatFilter默认值true
         enabled: true
