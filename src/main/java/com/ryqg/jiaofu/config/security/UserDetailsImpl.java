@@ -1,34 +1,39 @@
 package com.ryqg.jiaofu.config.security;
 
-import com.ryqg.jiaofu.domain.pojo.User;
+import cn.hutool.core.collection.CollectionUtil;
+import com.ryqg.jiaofu.domain.pojo.UserCredentials;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
+import java.util.stream.Collectors;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class UserDetailsImpl implements UserDetails {
-    private User user;
+    private UserCredentials userCredentials;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return CollectionUtil.isNotEmpty(userCredentials.getRoles()) ?
+                userCredentials.getRoles().stream().map(SimpleGrantedAuthority::new)
+                        .collect(Collectors.toSet()) : Collections.emptySet();
     }
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return userCredentials.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return user.getUserName();
+        return userCredentials.getUserName();
     }
 
     @Override

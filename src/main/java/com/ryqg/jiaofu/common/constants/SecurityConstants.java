@@ -15,4 +15,14 @@ public interface SecurityConstants {
     String ROLE_PREFIX = "ROLE_";
 
     String LOGIN_INFO = "LOGIN_INFO";
+
+    /**
+     * 超级管理员角色编码
+     */
+    String ROOT_ROLE_CODE = "ROOT";
+
+    /**
+     * 根节点ID
+     */
+    String ROOT_NODE_ID = "0";
 }

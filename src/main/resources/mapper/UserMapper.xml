@@ -4,7 +4,19 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.ryqg.jiaofu.business.mapper.UserMapper">
-    <insert id="save" parameterType = 'User'>
+    <resultMap id="userCredentialMap" type="UserCredentials">
+        <id property="id" column="id"/>
+        <result property="userName" column="user_name"/>
+        <result property="phone" column="phone"/>
+        <result property="password" column="password"/>
+        <!-- 嵌套集合映射 -->
+        <collection property="roles" ofType="string" javaType="java.util.Set">
+            <result column="code"/>
+        </collection>
+    </resultMap>
+
+
+    <insert id="save" parameterType='User'>
         insert into sus_users
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="userId != null and userId !='' ">user_id,</if>
@@ -25,5 +37,15 @@
         <where>
             <if test="phone != null and phone != ''">and phone =#{phone}</if>
         </where>
+    </select>
+
+    <select id="getAuthCredentialsByPhone" resultMap="userCredentialMap">
+        select u.id, u.user_name, u.phone, u.password, r.code
+        from sys_users u
+                 left join sys_users_roles ur ON u.id = ur.user_id
+                 left join sys_roles r ON ur.role_id = r.id
+        where u.phone = #{phone}
+
+
     </select>
 </mapper>

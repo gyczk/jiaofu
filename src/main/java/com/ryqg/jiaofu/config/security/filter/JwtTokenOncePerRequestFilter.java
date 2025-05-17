@@ -1,13 +1,10 @@
 package com.ryqg.jiaofu.config.security.filter;
 
-import com.ryqg.jiaofu.common.BaseContext;
 import com.ryqg.jiaofu.common.ResultCode;
 import com.ryqg.jiaofu.common.exception.CustomerAuthenticationException;
 import com.ryqg.jiaofu.config.property.SecurityProperties;
-import com.ryqg.jiaofu.config.security.UserDetailsImpl;
 import com.ryqg.jiaofu.config.security.handler.LoginFailureHandler;
 import com.ryqg.jiaofu.config.security.token.TokenManager;
-import com.ryqg.jiaofu.utils.TokenToUserDetailsUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,7 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -79,23 +76,18 @@ public class JwtTokenOncePerRequestFilter extends OncePerRequestFilter {
         if (ObjectUtils.isEmpty(token)) {
             throw new CustomerAuthenticationException(ResultCode.ACCESS_TOKEN_EMPTY);
         }
-        // redis进行校验
-        UserDetailsImpl userDetails = TokenToUserDetailsUtil.getUserDetails(token);
-        String userId = userDetails.getUser().getId();
-        if (!tokenManager.validateToken(token)) {
-            throw new CustomerAuthenticationException(ResultCode.ACCESS_TOKEN_INVALID);
-        }
-
         try {
-            log.info("jwt校验:{}", token);
-            log.info("当前用户id：{}", userId);
-            BaseContext.setCurrentId(userId);
+            // redis进行校验
+            if (!tokenManager.validateToken(token)) {
+                throw new CustomerAuthenticationException(ResultCode.ACCESS_TOKEN_INVALID);
+            }
+
+            Authentication authentication = tokenManager.parseToken(token);
+            // 把校验后的用户信息再次放入到SpringSecurity的上下文中
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (Exception ex) {
             SecurityContextHolder.clearContext();
             throw new CustomerAuthenticationException(ResultCode.ACCESS_TOKEN_VERIFICATION_FAILED);
         }
-        // 把校验后的用户信息再次放入到SpringSecurity的上下文中
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null,userDetails.getAuthorities()); // 已认证的 Authentication 对象，包含用户的权限信息
-        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }

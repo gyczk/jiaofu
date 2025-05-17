@@ -9,14 +9,13 @@ import com.ryqg.jiaofu.business.mapper.UserMapper;
 import com.ryqg.jiaofu.business.service.UserRoleService;
 import com.ryqg.jiaofu.business.service.UserService;
 import com.ryqg.jiaofu.common.converter.UserConverter;
-import com.ryqg.jiaofu.config.security.UserDetailsImpl;
 import com.ryqg.jiaofu.domain.dto.UserDTO;
 import com.ryqg.jiaofu.domain.pojo.User;
 import com.ryqg.jiaofu.domain.vo.UserVO;
+import com.ryqg.jiaofu.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -55,8 +54,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserConverter,User,
 
     @Override
     public UserVO getMe() {
-        UserDetailsImpl userDetails = (UserDetailsImpl)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String phone = userDetails.getUser().getPhone();
+        String phone = SecurityUtils.getPhone();
         User user = baseMapper.getUser(phone);
         return baseConverter.toVO(user);
     }

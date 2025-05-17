@@ -2,9 +2,9 @@
 spring: #spring.security.jwt.key
   data:
     redis:
-      host: 127.0.0.1
+      host: 117.72.56.61
       port: 6379
-      password: czk
+      password: redis
       database: 9 # 默认值为0
       lettuce:
         pool:
@@ -17,17 +17,18 @@ spring: #spring.security.jwt.key
   datasource:
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://127.0.0.1:3306/jiaofu?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&useSSL=false
-      username: root
-      password: root
+#      url: jdbc:mysql://127.0.0.1:3306/jiaofu?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&useSSL=false
+      url: jdbc:mysql://117.72.56.61:3306/jiaofu?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&autoReconnect=true&allowMultiQueries=true
+      username: jiaofu
+      password: QAZ123_abc!
       initial-size: 5
       min-idle: 5
       max-active: 20
       max-wait: 60000
+      testWhileIdle: true
       time-between-eviction-runs-millis: 60000
       min-evictable-idle-time-millis: 300000
       validation-query: SELECT 1 FROM DUAL
-      test-while-idle: true
       test-on-borrow: false
       test-on-return: false
       pool-prepared-statements: true

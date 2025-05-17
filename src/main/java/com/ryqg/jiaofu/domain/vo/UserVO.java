@@ -10,8 +10,6 @@ public class UserVO  extends BaseVO{
 
     private String phone;
 
-    private String password;
-
     private int doc_num;
 
     private int fans;

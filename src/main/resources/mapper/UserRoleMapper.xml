@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.ryqg.jiaofu.business.mapper.UserRoleMapper">
-    <insert id="batchInsert" parameterType = 'UserRole'>
+    <insert id="batchInsert" >
         insert into sys_users_roles values
         <foreach collection="roleIds" item="roleId" separator=",">
             (#{userId}, #{roleId})
