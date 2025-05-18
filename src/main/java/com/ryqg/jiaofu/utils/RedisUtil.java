@@ -2,7 +2,6 @@ package com.ryqg.jiaofu.utils;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
@@ -14,7 +13,6 @@ import java.util.concurrent.TimeUnit;
 /**
  * Redis工具类
  */
-@Component
 @RequiredArgsConstructor
 public class RedisUtil {
 

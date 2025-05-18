@@ -1,61 +1,82 @@
-
-spring: #spring.security.jwt.key
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://117.72.56.61:3306/jiaofu?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&autoReconnectForPools=true&noAccessToProcedureBodies=true&allowMultiQueries=true&zeroDateTimeBehavior=convertToNull
+    username: jiaofu
+    password: QAZ123_abc!
+    hikari:
+      connectionTestQuery: SELECT 1
+      connectionTimeout: 10000
+      idleTimeout: 300000
+      maxLifetime: 1740000
+      maximumPoolSize: 20
+      minimumIdle: 5
+      poolName: HikariPool-1
+      registerMbeans: true
+      validationTimeout: 5000
+      leakDetectionThreshold: 30000
+  #    druid:
+#      driverClassName: com.mysql.cj.jdbc.Driver
+#      #      url: jdbc:mysql://127.0.0.1:3306/jiaofu?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&useSSL=false
+#      url: jdbc:mysql://117.72.56.61:3306/jiaofu?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&autoReconnect=true&allowMultiQueries=true
+#      username: jiaofu
+#      password: QAZ123_abc!
+#      initialSize: 5
+#      minIdle: 5
+#      maxActive: 20
+#      maxWait: 6000
+#      testWhileIdle: true
+#      timeBetweenEvictionRunsMillis: 60000
+#      minEvictableIdleTimeMillis: 300000
+#      validationQuery: SELECT 1 FROM DUAL
+#      testOnBorrow: false
+#      testOnReturn: false
+#      poolPreparedStatements: false
+#      maxPoolPreparedStatementPerConnectionSize: 20
+#      filters: stat,wall,slf4j
+#      connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+#      web-stat-filter:
+#        # 是否启用StatFilter默认值true
+#        enabled: true
+#        # 添加过滤规则
+#        url-pattern: /*
+#        # 忽略过滤的格式
+#        exclusions: /druid/*,*.js,*.gif,*.jpg,*.png,*.css,*.ico
+#      stat-view-servlet:
+#        # 是否启用StatViewServlet默认值true
+#        enabled: true
+#        # 访问路径为/druid时，跳转到StatViewServlet
+#        url-pattern: /druid/*
+#        # 是否能够重置数据
+#        reset-enable: false
+#        # 需要账号密码才能访问控制台，默认为root
+#        login-username: druid
+#        login-password: druid
+#        # IP白名单
+#        allow: 127.0.0.1
+#        # IP黑名单（共同存在时，deny优先于allow）
+#        deny:
   data:
     redis:
       host: 117.72.56.61
       port: 6379
       password: redis
-      database: 9 # 默认值为0
+      database: 1 # 默认值为0
+      timeout: 10s
+      connectTimeout: 5s
       lettuce:
         pool:
-          max-active: 10  # 允许最大连接数，默认8（负值表示没有限制），推荐值：大于cpu * 2，通常为(cpu * 2) + 2
-          max-idle: 8     # 最大空闲连接数，默认8，推荐值：cpu * 2
-          min-idle: 0     # 最小空闲连接数，默认0
-          max-wait: 5s    # 连接用完时，新的请求等待时间(s秒、ms毫秒)，超过该时间抛出异常，默认-1（负值表示没有限制）
+          # 连接池最大连接数 默认8 ，负数表示没有限制
+          max-active: 8
+          # 连接池最大阻塞等待时间（使用负值表示没有限制） 默认-1
+          max-wait: -1
+          # 连接池中的最大空闲连接 默认8
+          max-idle: 8
+          # 连接池中的最小空闲连接 默认0
+          min-idle: 0
   application:
     name: jiaofu
-  datasource:
-    druid:
-      driver-class-name: com.mysql.cj.jdbc.Driver
-#      url: jdbc:mysql://127.0.0.1:3306/jiaofu?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&useSSL=false
-      url: jdbc:mysql://117.72.56.61:3306/jiaofu?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&autoReconnect=true&allowMultiQueries=true
-      username: jiaofu
-      password: QAZ123_abc!
-      initialSize: 5
-      minIdle: 5
-      maxActive: 20
-      maxWait: 60000
-      testWhileIdle: true
-      timeBetweenEvictionRunsMillis: 60000
-      minEvictableIdleTimeMillis: 300000
-      validationQuery: SELECT 1 FROM DUAL
-      testOnBorrow: false
-      testOnReturn: false
-      poolPreparedStatements: true
-      maxPoolPreparedStatementPerConnectionSize: 20
-      filters: stat,wall,slf4j
-      connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
-      web-stat-filter:
-        # 是否启用StatFilter默认值true
-        enabled: true
-        # 添加过滤规则
-        url-pattern: /*
-        # 忽略过滤的格式
-        exclusions: /druid/*,*.js,*.gif,*.jpg,*.png,*.css,*.ico
-      stat-view-servlet:
-        # 是否启用StatViewServlet默认值true
-        enabled: true
-        # 访问路径为/druid时，跳转到StatViewServlet
-        url-pattern: /druid/*
-        # 是否能够重置数据
-        reset-enable: false
-        # 需要账号密码才能访问控制台，默认为root
-        login-username: druid
-        login-password: druid
-        # IP白名单
-        allow: 127.0.0.1
-        # IP黑名单（共同存在时，deny优先于allow）
-        deny:
+
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: com.ryqg.jiaofu.domain.pojo
