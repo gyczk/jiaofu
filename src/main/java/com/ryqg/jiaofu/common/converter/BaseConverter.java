@@ -11,7 +11,7 @@ import org.mapstruct.Mappings;
 public interface BaseConverter<Entity extends BaseModel,DTO extends BaseDTO,VO extends BaseVO> {
     Entity toEntity(DTO dto);
 
-    BaseDTO toDTO(Entity entity);
+    DTO toDTO(Entity entity);
 
     VO toVO(Entity entity);
 

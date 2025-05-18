@@ -1,61 +1,25 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://117.72.56.61:3306/jiaofu?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&autoReconnectForPools=true&noAccessToProcedureBodies=true&allowMultiQueries=true&zeroDateTimeBehavior=convertToNull
+#    url: jdbc:mysql://117.72.56.61:3306/jiaofu?serverTimezone=Asia/Shanghai&useUnicode=true&useSSL=true&characterEncoding=utf-8&autoReconnect=true&autoReconnectForPools=true&noAccessToProcedureBodies=true&allowMultiQueries=true&zeroDateTimeBehavior=convertToNull
+    url: jdbc:mysql://117.72.56.61:3306/jiaofu?serverTimezone=UTC&useSSL=true&allowPublicKeyRetrieval=true&autoReconnect=true&socketTimeout=60000&characterEncoding=utf-8
     username: jiaofu
     password: QAZ123_abc!
     hikari:
       connectionTestQuery: SELECT 1
-      connectionTimeout: 10000
+      connectionTimeout: 30000
       idleTimeout: 300000
-      maxLifetime: 1740000
+#      maxLifetime: 1740000
+      maxLifetime: 1800000
       maximumPoolSize: 20
       minimumIdle: 5
       poolName: HikariPool-1
       registerMbeans: true
       validationTimeout: 5000
       leakDetectionThreshold: 30000
-  #    druid:
-#      driverClassName: com.mysql.cj.jdbc.Driver
-#      #      url: jdbc:mysql://127.0.0.1:3306/jiaofu?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&useSSL=false
-#      url: jdbc:mysql://117.72.56.61:3306/jiaofu?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&autoReconnect=true&allowMultiQueries=true
-#      username: jiaofu
-#      password: QAZ123_abc!
-#      initialSize: 5
-#      minIdle: 5
-#      maxActive: 20
-#      maxWait: 6000
-#      testWhileIdle: true
-#      timeBetweenEvictionRunsMillis: 60000
-#      minEvictableIdleTimeMillis: 300000
-#      validationQuery: SELECT 1 FROM DUAL
-#      testOnBorrow: false
-#      testOnReturn: false
-#      poolPreparedStatements: false
-#      maxPoolPreparedStatementPerConnectionSize: 20
-#      filters: stat,wall,slf4j
-#      connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
-#      web-stat-filter:
-#        # 是否启用StatFilter默认值true
-#        enabled: true
-#        # 添加过滤规则
-#        url-pattern: /*
-#        # 忽略过滤的格式
-#        exclusions: /druid/*,*.js,*.gif,*.jpg,*.png,*.css,*.ico
-#      stat-view-servlet:
-#        # 是否启用StatViewServlet默认值true
-#        enabled: true
-#        # 访问路径为/druid时，跳转到StatViewServlet
-#        url-pattern: /druid/*
-#        # 是否能够重置数据
-#        reset-enable: false
-#        # 需要账号密码才能访问控制台，默认为root
-#        login-username: druid
-#        login-password: druid
-#        # IP白名单
-#        allow: 127.0.0.1
-#        # IP黑名单（共同存在时，deny优先于allow）
-#        deny:
+      keepalive-time: 60000
+      initialization-fail-timeout: 1
+
   data:
     redis:
       host: 117.72.56.61
@@ -108,5 +72,14 @@ security:
     - /webjars/**
     - /favicon.ico
     - /index.html
+    - /actuator/**
 server:
   port: 8080
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "metrics,health,info"
+  endpoint:
+    health:
+      show-details: always
