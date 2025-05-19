@@ -16,4 +16,12 @@ public interface RedisConstants {
         // 黑名单 Token（用于退出登录或注销）
         String BLACKLIST_TOKEN = "auth:token:blacklist:{}";
     }
+
+    /**
+     * 系统模块
+     */
+    interface System {
+        String CONFIG = "system:config";                 // 系统配置
+        String ROLE_PERMS = "system:role:perms"; // 系统角色和权限映射
+    }
 }

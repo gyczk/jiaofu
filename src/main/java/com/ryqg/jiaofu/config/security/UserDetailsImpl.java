@@ -1,7 +1,7 @@
 package com.ryqg.jiaofu.config.security;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.ryqg.jiaofu.domain.pojo.UserCredentials;
+import com.ryqg.jiaofu.domain.model.UserCredentials;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

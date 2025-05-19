@@ -1,4 +1,4 @@
-package com.ryqg.jiaofu.domain.pojo;
+package com.ryqg.jiaofu.domain.model;
 
 import lombok.Data;
 

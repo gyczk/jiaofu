@@ -15,6 +15,17 @@
         </collection>
     </resultMap>
 
+    <resultMap id="UserFormMap" type="UserVO">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="userName" column="user_name" jdbcType="VARCHAR"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <collection
+                property="roleIds"
+                column="id"
+                select="com.ryqg.jiaofu.business.mapper.UserRoleMapper.listRoleIdsByUserId" >
+            <result column="role_id" />
+        </collection>
+    </resultMap>
 
     <insert id="save" parameterType='User'>
         insert into sus_users
@@ -45,7 +56,11 @@
                  left join sys_users_roles ur ON u.id = ur.user_id
                  left join sys_roles r ON ur.role_id = r.id
         where u.phone = #{phone}
+    </select>
 
-
+    <select id="getUserForm" resultMap="UserFormMap">
+        select *
+        from sys_users
+        where id = #{userId}
     </select>
 </mapper>

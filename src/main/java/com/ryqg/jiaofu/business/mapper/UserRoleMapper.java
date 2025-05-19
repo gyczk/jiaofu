@@ -10,4 +10,6 @@ import java.util.List;
 @Mapper
 public interface UserRoleMapper extends BaseMapper<UserRole> {
     void batchInsert(@Param("userId") String userId, @Param("roleIds") List<String> roleIds);
+
+    List<String> listRoleIdsByUserId(@Param("userId") String userId);
 }

@@ -4,10 +4,16 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.ryqg.jiaofu.business.mapper.UserRoleMapper">
-    <insert id="batchInsert" >
+    <insert id="batchInsert">
         insert into sys_users_roles values
         <foreach collection="roleIds" item="roleId" separator=",">
             (#{userId}, #{roleId})
         </foreach>
     </insert>
+
+    <select id="listRoleIdsByUserId" resultType="java.lang.String">
+        SELECT role_id
+        FROM sys_users_roles
+        WHERE user_id = #{userId}
+    </select>
 </mapper>

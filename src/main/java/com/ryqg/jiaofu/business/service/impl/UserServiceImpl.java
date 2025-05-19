@@ -1,5 +1,6 @@
 package com.ryqg.jiaofu.business.service.impl;
 
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.db.sql.Direction;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -11,6 +12,7 @@ import com.ryqg.jiaofu.business.service.UserService;
 import com.ryqg.jiaofu.common.converter.UserConverter;
 import com.ryqg.jiaofu.domain.dto.UserDTO;
 import com.ryqg.jiaofu.domain.pojo.User;
+import com.ryqg.jiaofu.domain.vo.CurrentUserVO;
 import com.ryqg.jiaofu.domain.vo.UserVO;
 import com.ryqg.jiaofu.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
@@ -21,12 +23,15 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class UserServiceImpl extends ServiceImpl<UserMapper, UserConverter,User, UserDTO, UserVO> implements UserService {
+public class UserServiceImpl extends ServiceImpl<UserMapper, UserConverter, User, UserDTO, UserVO> implements UserService {
     private final PasswordEncoder passwordEncoder;
+
+    private final PermissionCacheService permissionCacheService;
 
     private final UserRoleService userRoleService;
 
@@ -44,18 +49,34 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserConverter,User,
         if (dto != null) {
             queryWrapper.lambda().like(StringUtils.isNotBlank(dto.getUserName()), User::getUserName, dto.getUserName())
                     .eq(StringUtils.isNotBlank(dto.getPhone()), User::getPhone, dto.getPhone());
-            }
-        Arrays.stream(pageParam.getOrders()).forEach(item -> {
-                    queryWrapper.orderBy(true, Direction.ASC.equals(item.getDirection()), item.getField());
-        });
-        page = baseMapper.selectPage(page,queryWrapper);
+        }
+        if (ArrayUtil.isNotEmpty(pageParam.getOrders())) {
+            Arrays.stream(pageParam.getOrders()).forEach(item -> {
+                queryWrapper.orderBy(true, Direction.ASC.equals(item.getDirection()), item.getField());
+            });
+        }
+        page = baseMapper.selectPage(page, queryWrapper);
         return baseConverter.toPageResult(page);
     }
 
     @Override
-    public UserVO getMe() {
+    public CurrentUserVO getMe() {
         String phone = SecurityUtils.getPhone();
         User user = baseMapper.getUser(phone);
-        return baseConverter.toVO(user);
+        CurrentUserVO currentUserVO = baseConverter.toCurrentUserVO(user);
+        // 设置 roles
+        Set<String> roles = SecurityUtils.getRoles();
+        currentUserVO.setRoles(roles);
+
+        //设置 perms,从缓存中获取
+        Set<String> perms = permissionCacheService.getPermissions(roles);
+        currentUserVO.setPerms(perms);
+
+        return currentUserVO;
+    }
+
+    @Override
+    public UserVO getUserForm(String userId) {
+        return baseMapper.getUserForm(userId);
     }
 }

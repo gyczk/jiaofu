@@ -59,7 +59,7 @@ public abstract class BaseController<M extends IBaseService<DTO, VO>,
     }
 
     @GetMapping("/page")
-    public Result<PageResult<VO>> page(@RequestBody(required = false) Page pageParam, @RequestBody(required = false) DTO dto){
+    public Result<PageResult<VO>> page(Page pageParam, @RequestParam(required = false) DTO dto){
         PageResult<VO> pageResult = baseService.pageQuery(pageParam,dto);
         return Result.success(pageResult);
     }

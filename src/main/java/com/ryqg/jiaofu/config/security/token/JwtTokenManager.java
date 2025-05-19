@@ -16,7 +16,7 @@ import com.ryqg.jiaofu.common.constants.SecurityConstants;
 import com.ryqg.jiaofu.common.exception.InvalidTokenException;
 import com.ryqg.jiaofu.config.property.SecurityProperties;
 import com.ryqg.jiaofu.config.security.UserDetailsImpl;
-import com.ryqg.jiaofu.domain.pojo.UserCredentials;
+import com.ryqg.jiaofu.domain.model.UserCredentials;
 import com.ryqg.jiaofu.domain.vo.TokenUserVO;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

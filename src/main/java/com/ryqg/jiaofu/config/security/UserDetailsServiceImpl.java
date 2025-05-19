@@ -3,7 +3,7 @@ package com.ryqg.jiaofu.config.security;
 import cn.hutool.core.collection.CollectionUtil;
 import com.ryqg.jiaofu.business.mapper.UserMapper;
 import com.ryqg.jiaofu.common.constants.SecurityConstants;
-import com.ryqg.jiaofu.domain.pojo.UserCredentials;
+import com.ryqg.jiaofu.domain.model.UserCredentials;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
