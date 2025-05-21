@@ -1,7 +1,9 @@
 package com.ryqg.jiaofu.business.service.impl;
 
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.sql.Direction;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -22,12 +24,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -92,5 +96,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserConverter, User
     @Override
     public UserVO getUserForm(String userId) {
         return baseMapper.getUserForm(userId);
+    }
+
+    @Transactional
+    @Override
+    public int delete(String ids) {
+        Assert.isTrue(StrUtil.isNotBlank(ids), "无删除的数据");
+        userRoleService.deleteByUserIds(ids);
+        return baseMapper.deleteBatchIds(Arrays.stream(ids.split(",")).collect(Collectors.toList()));
     }
 }
