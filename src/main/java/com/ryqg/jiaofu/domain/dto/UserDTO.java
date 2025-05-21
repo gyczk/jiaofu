@@ -20,5 +20,7 @@ public class UserDTO extends BaseDTO{
 
     private float coin;
 
+    private Integer status;
+
     private List<String> roleIds;
 }

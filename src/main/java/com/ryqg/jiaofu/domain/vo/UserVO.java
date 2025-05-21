@@ -18,5 +18,7 @@ public class UserVO  extends BaseVO{
 
     private float coin;
 
+    private Integer status;
+
     private List<String> roleIds;
 }

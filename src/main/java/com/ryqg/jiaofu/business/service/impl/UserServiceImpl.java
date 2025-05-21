@@ -1,7 +1,9 @@
 package com.ryqg.jiaofu.business.service.impl;
 
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.db.sql.Direction;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ryqg.jiaofu.business.common.PageResult;
@@ -10,6 +12,7 @@ import com.ryqg.jiaofu.business.mapper.UserMapper;
 import com.ryqg.jiaofu.business.service.UserRoleService;
 import com.ryqg.jiaofu.business.service.UserService;
 import com.ryqg.jiaofu.common.converter.UserConverter;
+import com.ryqg.jiaofu.domain.PageQuery.UserPageQuery;
 import com.ryqg.jiaofu.domain.dto.UserDTO;
 import com.ryqg.jiaofu.domain.pojo.User;
 import com.ryqg.jiaofu.domain.vo.CurrentUserVO;
@@ -17,10 +20,11 @@ import com.ryqg.jiaofu.domain.vo.UserVO;
 import com.ryqg.jiaofu.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -43,15 +47,25 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserConverter, User
     }
 
     @Override
-    public PageResult<UserVO> pageQuery(cn.hutool.db.Page pageParam, UserDTO dto) {
-        Page<User> page = Page.of(pageParam.getPageNumber(), pageParam.getPageSize());
+    public PageResult<UserVO> pageQuery(UserPageQuery userPageQuery) {
+        Page<User> page = Page.of(userPageQuery.getPageNumber(), userPageQuery.getPageSize());
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        if (dto != null) {
-            queryWrapper.lambda().like(StringUtils.isNotBlank(dto.getUserName()), User::getUserName, dto.getUserName())
-                    .eq(StringUtils.isNotBlank(dto.getPhone()), User::getPhone, dto.getPhone());
+        LambdaQueryWrapper<User> lambda = queryWrapper.lambda();
+        if (ArrayUtil.isNotEmpty(userPageQuery.getPhone())){
+            lambda.like(User::getPhone, userPageQuery.getPhone());
         }
-        if (ArrayUtil.isNotEmpty(pageParam.getOrders())) {
-            Arrays.stream(pageParam.getOrders()).forEach(item -> {
+        if (ObjectUtil.isNotNull(userPageQuery.getStatus())){
+            lambda.eq(User::getStatus, userPageQuery.getStatus());
+        }
+        LocalDateTime[] timeRangeArray = userPageQuery.getCreateTime();
+        if (ArrayUtil.isNotEmpty(timeRangeArray) && timeRangeArray.length >= 1) {
+            lambda.ge( User::getCreateTime,userPageQuery.getCreateTime()[0]);
+        }
+        if (ArrayUtil.isNotEmpty(timeRangeArray) && timeRangeArray.length >= 2) {
+            lambda.le(User::getCreateTime, userPageQuery.getCreateTime()[1].toLocalDate().atTime(LocalTime.MAX));
+        }
+        if (ArrayUtil.isNotEmpty(userPageQuery.getOrders())) {
+            Arrays.stream(userPageQuery.getOrders()).forEach(item -> {
                 queryWrapper.orderBy(true, Direction.ASC.equals(item.getDirection()), item.getField());
             });
         }

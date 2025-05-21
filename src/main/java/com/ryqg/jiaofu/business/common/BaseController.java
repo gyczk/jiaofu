@@ -1,6 +1,5 @@
 package com.ryqg.jiaofu.business.common;
 
-import cn.hutool.db.Page;
 import com.ryqg.jiaofu.common.Result;
 import com.ryqg.jiaofu.common.ResultCode;
 import com.ryqg.jiaofu.domain.dto.BaseDTO;
@@ -49,19 +48,12 @@ public abstract class BaseController<M extends IBaseService<DTO, VO>,
     }
 
     // 删除
-    @DeleteMapping("/{id}")
-    public Result<Void> delete(@PathVariable String id) {
-        int flag = baseService.delete(id);
-        if (flag != 1) {
+    @DeleteMapping("/{ids}")
+    public Result<Void> delete(@PathVariable String ids) {
+        int flag = baseService.delete(ids);
+        if (flag <= 0) {
             return Result.failed(ResultCode.DATA_DELETE_ERROR);
         }
         return Result.success();
     }
-
-    @GetMapping("/page")
-    public Result<PageResult<VO>> page(Page pageParam, @RequestParam(required = false) DTO dto){
-        PageResult<VO> pageResult = baseService.pageQuery(pageParam,dto);
-        return Result.success(pageResult);
-    }
-
 }

@@ -22,4 +22,7 @@ public class User extends BaseModel {
     private int fans;
 
     private float coin;
+
+    // (1:启用；0:禁用)
+    private Integer status;
 }
