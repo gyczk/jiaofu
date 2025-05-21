@@ -8,6 +8,7 @@ import com.ryqg.jiaofu.domain.PageQuery.RolePageQuery;
 import com.ryqg.jiaofu.domain.dto.RoleDTO;
 import com.ryqg.jiaofu.domain.model.Option;
 import com.ryqg.jiaofu.domain.vo.RoleVO;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,5 +36,13 @@ public class RoleController extends BaseController<RoleService, RoleDTO, RoleVO>
     public Result<RoleVO> getUserForm(@PathVariable String roleId){
         RoleVO roleVO = baseService.getRoleForm(roleId);
         return Result.success(roleVO);
+    }
+
+    @GetMapping("/{roleId}/menuIds")
+    public Result<List<String>> getRoleMenuIds(
+            @Parameter(description = "角色ID") @PathVariable String roleId
+    ) {
+        List<String> menuIds = baseService.getRoleMenuIds(roleId);
+        return Result.success(menuIds);
     }
 }

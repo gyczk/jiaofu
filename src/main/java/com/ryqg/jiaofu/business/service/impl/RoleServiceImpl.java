@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ryqg.jiaofu.business.common.PageResult;
 import com.ryqg.jiaofu.business.common.ServiceImpl;
 import com.ryqg.jiaofu.business.mapper.RoleMapper;
+import com.ryqg.jiaofu.business.service.RoleMenuService;
 import com.ryqg.jiaofu.business.service.RoleService;
 import com.ryqg.jiaofu.business.service.UserRoleService;
 import com.ryqg.jiaofu.common.constants.SecurityConstants;
@@ -36,6 +37,8 @@ import java.util.stream.Collectors;
 public class RoleServiceImpl extends ServiceImpl<RoleMapper, RoleConverter, Role, RoleDTO, RoleVO> implements RoleService {
     private final UserRoleService userRoleService;
 
+    private final RoleMenuService roleMenuService;
+
     @Override
     public PageResult<RoleVO> pageQuery(RolePageQuery rolePageQuery) {
         Page<Role> page = Page.of(rolePageQuery.getPageNumber(), rolePageQuery.getPageSize());
@@ -58,6 +61,11 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, RoleConverter, Role
     @Override
     public RoleVO getRoleForm(String roleId) {
         return this.findById(roleId);
+    }
+
+    @Override
+    public List<String> getRoleMenuIds(String roleId) {
+        return roleMenuService.getMenuIds(roleId);
     }
 
     @Override

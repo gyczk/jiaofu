@@ -4,6 +4,7 @@ import com.ryqg.jiaofu.business.common.IBaseService;
 import com.ryqg.jiaofu.business.common.PageResult;
 import com.ryqg.jiaofu.domain.PageQuery.MenuPageQuery;
 import com.ryqg.jiaofu.domain.dto.MenuDTO;
+import com.ryqg.jiaofu.domain.model.Option;
 import com.ryqg.jiaofu.domain.vo.MenuVO;
 import com.ryqg.jiaofu.domain.vo.RouteVO;
 
@@ -15,4 +16,6 @@ public interface MenuService extends IBaseService<MenuDTO, MenuVO> {
     List<RouteVO> getCurrentUserRoutes();
 
     PageResult<MenuVO> pageQuery(MenuPageQuery menuPageQuery);
+
+    List<Option<String>> listMenuOptions(boolean onlyParent);
 }

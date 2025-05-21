@@ -5,6 +5,7 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.sql.Direction;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -19,6 +20,7 @@ import com.ryqg.jiaofu.common.constants.StatusEnum;
 import com.ryqg.jiaofu.common.converter.MenuConverter;
 import com.ryqg.jiaofu.domain.PageQuery.MenuPageQuery;
 import com.ryqg.jiaofu.domain.dto.MenuDTO;
+import com.ryqg.jiaofu.domain.model.Option;
 import com.ryqg.jiaofu.domain.pojo.Menu;
 import com.ryqg.jiaofu.domain.vo.MenuVO;
 import com.ryqg.jiaofu.domain.vo.RouteVO;
@@ -46,6 +48,38 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, MenuConverter, Menu
         }
         page = baseMapper.selectPage(page, queryWrapper);
         return baseConverter.toPageResult(page);
+    }
+
+    @Override
+    public List<Option<String>> listMenuOptions(boolean onlyParent) {
+        LambdaQueryWrapper<Menu> menuLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        menuLambdaQueryWrapper.in(onlyParent,Menu::getType,MenuTypeEnum.MENU.getValue(),MenuTypeEnum.CATALOG.getValue())
+                .orderByAsc(Menu::getSort);
+        List<Menu> menuList = baseMapper.selectList(menuLambdaQueryWrapper);
+        return buildMenuOptions(SecurityConstants.ROOT_NODE_ID, menuList);
+    }
+
+    /**
+     * 递归生成菜单下拉层级列表
+     *
+     * @param parentId 父级ID
+     * @param menuList 菜单列表
+     * @return 菜单下拉列表
+     */
+    private List<Option<String>> buildMenuOptions(String parentId, List<Menu> menuList) {
+        List<Option<String>> menuOptions = new ArrayList<>();
+        for (Menu menu : menuList) {
+            if (menu.getParentId().equals(parentId)) {
+                Option<String> option = new Option<>(menu.getId(), menu.getName());
+                List<Option<String>> subMenuOptions = buildMenuOptions(menu.getId(), menuList);
+                if (!subMenuOptions.isEmpty()) {
+                    option.setChildren(subMenuOptions);
+                }
+                menuOptions.add(option);
+            }
+        }
+
+        return menuOptions;
     }
 
     @Override

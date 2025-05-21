@@ -6,11 +6,14 @@ import com.ryqg.jiaofu.business.service.MenuService;
 import com.ryqg.jiaofu.common.Result;
 import com.ryqg.jiaofu.domain.PageQuery.MenuPageQuery;
 import com.ryqg.jiaofu.domain.dto.MenuDTO;
+import com.ryqg.jiaofu.domain.model.Option;
 import com.ryqg.jiaofu.domain.vo.MenuVO;
 import com.ryqg.jiaofu.domain.vo.RouteVO;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -34,8 +37,17 @@ public class MenuController extends BaseController<MenuService, MenuDTO, MenuVO>
     }
 
     @GetMapping("/page")
-    public Result<PageResult<MenuVO>> page(MenuPageQuery menuPageQuery){
+    public Result<PageResult<MenuVO>> page(MenuPageQuery menuPageQuery) {
         PageResult<MenuVO> pageResult = baseService.pageQuery(menuPageQuery);
         return Result.success(pageResult);
+    }
+
+    @GetMapping("/options")
+    public Result<List<Option<String>>> listMenuOptions(
+            @Parameter(description = "是否只查询父级菜单")
+            @RequestParam(required = false, defaultValue = "false") boolean onlyParent
+    ) {
+        List<Option<String>> menus = menuService.listMenuOptions(onlyParent);
+        return Result.success(menus);
     }
 }
