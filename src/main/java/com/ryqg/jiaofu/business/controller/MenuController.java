@@ -1,8 +1,10 @@
 package com.ryqg.jiaofu.business.controller;
 
 import com.ryqg.jiaofu.business.common.BaseController;
+import com.ryqg.jiaofu.business.common.PageResult;
 import com.ryqg.jiaofu.business.service.MenuService;
 import com.ryqg.jiaofu.common.Result;
+import com.ryqg.jiaofu.domain.PageQuery.MenuPageQuery;
 import com.ryqg.jiaofu.domain.dto.MenuDTO;
 import com.ryqg.jiaofu.domain.vo.MenuVO;
 import com.ryqg.jiaofu.domain.vo.RouteVO;
@@ -29,5 +31,11 @@ public class MenuController extends BaseController<MenuService, MenuDTO, MenuVO>
     public Result<List<RouteVO>> getCurrentUserRoutes() {
         List<RouteVO> routeList = menuService.getCurrentUserRoutes();
         return Result.success(routeList);
+    }
+
+    @GetMapping("/page")
+    public Result<PageResult<MenuVO>> page(MenuPageQuery menuPageQuery){
+        PageResult<MenuVO> pageResult = baseService.pageQuery(menuPageQuery);
+        return Result.success(pageResult);
     }
 }

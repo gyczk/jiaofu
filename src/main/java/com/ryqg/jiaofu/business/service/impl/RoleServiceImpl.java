@@ -10,6 +10,7 @@ import com.ryqg.jiaofu.business.mapper.RoleMapper;
 import com.ryqg.jiaofu.business.service.RoleService;
 import com.ryqg.jiaofu.common.constants.SecurityConstants;
 import com.ryqg.jiaofu.common.converter.RoleConverter;
+import com.ryqg.jiaofu.domain.PageQuery.RolePageQuery;
 import com.ryqg.jiaofu.domain.dto.RoleDTO;
 import com.ryqg.jiaofu.domain.model.Option;
 import com.ryqg.jiaofu.domain.pojo.Role;
@@ -25,16 +26,15 @@ import java.util.List;
 @Service
 @Slf4j
 public class RoleServiceImpl extends ServiceImpl<RoleMapper, RoleConverter, Role, RoleDTO, RoleVO> implements RoleService {
-    
     @Override
-    public PageResult<RoleVO> pageQuery(cn.hutool.db.Page pageParam, RoleDTO dto) {
-        Page<Role> page = Page.of(pageParam.getPageNumber(), pageParam.getPageSize());
+    public PageResult<RoleVO> pageQuery(RolePageQuery rolePageQuery) {
+        Page<Role> page = Page.of(rolePageQuery.getPageNumber(), rolePageQuery.getPageSize());
         QueryWrapper<Role> queryWrapper = new QueryWrapper<>();
-        if (dto != null) {
-            queryWrapper.lambda().like(StringUtils.isNotBlank(dto.getName()), Role::getName, dto.getName());
+        if (ArrayUtil.isNotEmpty(rolePageQuery.getName())){
+            queryWrapper.lambda().like(StringUtils.isNotBlank(rolePageQuery.getName()), Role::getName, rolePageQuery.getName());
             }
-        if (ArrayUtil.isNotEmpty(pageParam.getOrders())) {
-            Arrays.stream(pageParam.getOrders()).forEach(item -> {
+        if (ArrayUtil.isNotEmpty(rolePageQuery.getOrders())) {
+            Arrays.stream(rolePageQuery.getOrders()).forEach(item -> {
                 queryWrapper.orderBy(true, Direction.ASC.equals(item.getDirection()), item.getField());
             });
         }

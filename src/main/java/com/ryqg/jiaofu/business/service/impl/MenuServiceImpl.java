@@ -1,6 +1,7 @@
 package com.ryqg.jiaofu.business.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.sql.Direction;
@@ -16,6 +17,7 @@ import com.ryqg.jiaofu.common.constants.MenuTypeEnum;
 import com.ryqg.jiaofu.common.constants.SecurityConstants;
 import com.ryqg.jiaofu.common.constants.StatusEnum;
 import com.ryqg.jiaofu.common.converter.MenuConverter;
+import com.ryqg.jiaofu.domain.PageQuery.MenuPageQuery;
 import com.ryqg.jiaofu.domain.dto.MenuDTO;
 import com.ryqg.jiaofu.domain.pojo.Menu;
 import com.ryqg.jiaofu.domain.vo.MenuVO;
@@ -31,17 +33,17 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class MenuServiceImpl extends ServiceImpl<MenuMapper, MenuConverter, Menu, MenuDTO, MenuVO> implements MenuService {
-
-    @Override
-    public PageResult<MenuVO> pageQuery(cn.hutool.db.Page pageParam, MenuDTO dto) {
-        Page<Menu> page = Page.of(pageParam.getPageNumber(), pageParam.getPageSize());
+    public PageResult<MenuVO> pageQuery(MenuPageQuery menuPageQuery) {
+        Page<Menu> page = Page.of(menuPageQuery.getPageNumber(), menuPageQuery.getPageSize());
         QueryWrapper<Menu> queryWrapper = new QueryWrapper<>();
-        if (dto != null) {
-            queryWrapper.lambda().like(StringUtils.isNotBlank(dto.getName()), Menu::getName, dto.getName());
+        if (StrUtil.isBlankIfStr(menuPageQuery.getName())) {
+            queryWrapper.lambda().like(StringUtils.isNotBlank(menuPageQuery.getName()), Menu::getName, menuPageQuery.getName());
         }
-        Arrays.stream(pageParam.getOrders()).forEach(item -> {
-            queryWrapper.orderBy(true, Direction.ASC.equals(item.getDirection()), item.getField());
-        });
+        if (ArrayUtil.isNotEmpty(menuPageQuery.getOrders())){
+            Arrays.stream(menuPageQuery.getOrders()).forEach(item -> {
+                queryWrapper.orderBy(true, Direction.ASC.equals(item.getDirection()), item.getField());
+            });
+        }
         page = baseMapper.selectPage(page, queryWrapper);
         return baseConverter.toPageResult(page);
     }

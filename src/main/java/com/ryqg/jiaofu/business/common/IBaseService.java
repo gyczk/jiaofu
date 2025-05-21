@@ -1,6 +1,5 @@
 package com.ryqg.jiaofu.business.common;
 
-import cn.hutool.db.Page;
 import com.ryqg.jiaofu.domain.dto.BaseDTO;
 import com.ryqg.jiaofu.domain.vo.BaseVO;
 
@@ -11,7 +10,5 @@ public interface IBaseService<DTO extends BaseDTO,VO extends BaseVO> {
 
     int update(DTO dto);
 
-    int delete(String id);
-
-    PageResult<VO> pageQuery(Page pageParam, DTO dto);
+    int delete(String ids);
 }
