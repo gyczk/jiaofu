@@ -1,16 +1,12 @@
 package com.ryqg.jiaofu.business.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.db.sql.Direction;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ryqg.jiaofu.business.common.PageResult;
 import com.ryqg.jiaofu.business.common.ServiceImpl;
 import com.ryqg.jiaofu.business.mapper.MenuMapper;
 import com.ryqg.jiaofu.business.service.MenuService;
@@ -20,6 +16,7 @@ import com.ryqg.jiaofu.common.constants.StatusEnum;
 import com.ryqg.jiaofu.common.converter.MenuConverter;
 import com.ryqg.jiaofu.domain.PageQuery.MenuPageQuery;
 import com.ryqg.jiaofu.domain.dto.MenuDTO;
+import com.ryqg.jiaofu.domain.model.KeyValue;
 import com.ryqg.jiaofu.domain.model.Option;
 import com.ryqg.jiaofu.domain.pojo.Menu;
 import com.ryqg.jiaofu.domain.vo.MenuVO;
@@ -35,28 +32,44 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class MenuServiceImpl extends ServiceImpl<MenuMapper, MenuConverter, Menu, MenuDTO, MenuVO> implements MenuService {
-    public PageResult<MenuVO> pageQuery(MenuPageQuery menuPageQuery) {
-        Page<Menu> page = Page.of(menuPageQuery.getPageNumber(), menuPageQuery.getPageSize());
-        QueryWrapper<Menu> queryWrapper = new QueryWrapper<>();
-        if (StrUtil.isBlankIfStr(menuPageQuery.getName())) {
-            queryWrapper.lambda().like(StringUtils.isNotBlank(menuPageQuery.getName()), Menu::getName, menuPageQuery.getName());
-        }
-        if (ArrayUtil.isNotEmpty(menuPageQuery.getOrders())){
-            Arrays.stream(menuPageQuery.getOrders()).forEach(item -> {
-                queryWrapper.orderBy(true, Direction.ASC.equals(item.getDirection()), item.getField());
-            });
-        }
-        page = baseMapper.selectPage(page, queryWrapper);
-        return baseConverter.toPageResult(page);
-    }
-
     @Override
     public List<Option<String>> listMenuOptions(boolean onlyParent) {
         LambdaQueryWrapper<Menu> menuLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        menuLambdaQueryWrapper.in(onlyParent,Menu::getType,MenuTypeEnum.MENU.getValue(),MenuTypeEnum.CATALOG.getValue())
+        menuLambdaQueryWrapper.in(onlyParent, Menu::getType, MenuTypeEnum.MENU.getValue(), MenuTypeEnum.CATALOG.getValue())
                 .orderByAsc(Menu::getSort);
         List<Menu> menuList = baseMapper.selectList(menuLambdaQueryWrapper);
         return buildMenuOptions(SecurityConstants.ROOT_NODE_ID, menuList);
+    }
+
+    @Override
+    public MenuVO getMenuForm(String id) {
+        Menu entity = baseMapper.selectById(id);
+        MenuVO menuVO = baseConverter.toVO(entity);
+        if (ObjectUtil.isNotNull(entity)) {
+            // 路由参数字符串 {"id":"1","name":"张三"} 转换为 [{key:"id", value:"1"}, {key:"name", value:"张三"}]
+            String params = entity.getParams();
+            if (StrUtil.isNotBlank(params)) {
+                ObjectMapper objectMapper = new ObjectMapper();
+                try {
+                    // 解析 JSON 字符串为 Map<String, String>
+                    Map<String, String> paramMap = objectMapper.readValue(params, new TypeReference<>() {
+                    });
+
+                    // 转换为 List<KeyValue> 格式 [{key:"id", value:"1"}, {key:"name", value:"张三"}]
+                    List<KeyValue> transformedList = paramMap.entrySet().stream()
+                            .map(entry -> new KeyValue(entry.getKey(), entry.getValue()))
+                            .toList();
+
+                    // 将转换后的列表存入 MenuForm
+                    menuVO.setParams(transformedList);
+                } catch (Exception e) {
+                    throw new RuntimeException("解析参数失败", e);
+                }
+            }
+        }
+
+
+        return menuVO;
     }
 
     /**
@@ -83,9 +96,9 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, MenuConverter, Menu
     }
 
     @Override
-    public List<MenuVO> listMenus(MenuDTO menuDTO) {
+    public List<MenuVO> listMenus(MenuPageQuery menuPageQuery) {
         QueryWrapper<Menu> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().like(StringUtils.isNotBlank(menuDTO.getName()), Menu::getName, menuDTO.getName())
+        queryWrapper.lambda().like(StringUtils.isNotBlank(menuPageQuery.getName()), Menu::getName, menuPageQuery.getName())
                 .orderByAsc(Menu::getSort);
         List<Menu> menus = baseMapper.selectList(queryWrapper);
 

@@ -1,5 +1,6 @@
 package com.ryqg.jiaofu.domain.vo;
 
+import com.ryqg.jiaofu.domain.model.KeyValue;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -51,7 +52,7 @@ public class MenuVO extends BaseVO {
     private String  redirect;
 
     // 路由参数
-    private String  params;
+    private List<KeyValue>  params;
 
     private List<MenuVO> children;
 }

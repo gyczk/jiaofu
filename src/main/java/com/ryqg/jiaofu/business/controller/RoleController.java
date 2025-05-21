@@ -37,8 +37,7 @@ public class RoleController extends BaseController<RoleService, RoleDTO, RoleVO>
 
     @GetMapping("/{roleId}/menuIds")
     public Result<List<String>> getRoleMenuIds(
-            @Parameter(description = "角色ID") @PathVariable String roleId
-    ) {
+            @Parameter(description = "角色ID") @PathVariable String roleId) {
         List<String> menuIds = baseService.getRoleMenuIds(roleId);
         return Result.success(menuIds);
     }
@@ -46,8 +45,7 @@ public class RoleController extends BaseController<RoleService, RoleDTO, RoleVO>
     @PutMapping("/{roleId}/menus")
     public Result<Void> assignMenusToRole(
             @PathVariable String roleId,
-            @RequestBody List<String> menuIds
-    ) {
+            @RequestBody List<String> menuIds) {
         baseService.assignMenusToRole(roleId, menuIds);
         return Result.success();
     }
