@@ -170,8 +170,7 @@ public class JwtTokenManager implements TokenManager {
      */
     @Override
     public boolean validateToken(String token) {
-        return true;
-//        return redisTemplate.hasKey(formatRedisKey(RedisConstants.Auth.ACCESS_TOKEN_USER, token));
+        return redisTemplate.hasKey(formatRedisKey(RedisConstants.Auth.ACCESS_TOKEN_USER, token));
         /*JWT jwt = JWTUtil.parseToken(token);
         // 检查 Token 是否有效(验签 + 是否过期)
         boolean isValid = jwt.setKey(secretKey).validate(0);
