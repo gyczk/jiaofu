@@ -1,6 +1,8 @@
 package com.ryqg.jiaofu.business.service.impl;
 
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.sql.Direction;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -9,6 +11,7 @@ import com.ryqg.jiaofu.business.common.PageResult;
 import com.ryqg.jiaofu.business.common.ServiceImpl;
 import com.ryqg.jiaofu.business.mapper.RoleMapper;
 import com.ryqg.jiaofu.business.service.RoleService;
+import com.ryqg.jiaofu.business.service.UserRoleService;
 import com.ryqg.jiaofu.common.constants.SecurityConstants;
 import com.ryqg.jiaofu.common.converter.RoleConverter;
 import com.ryqg.jiaofu.domain.PageQuery.RolePageQuery;
@@ -17,16 +20,22 @@ import com.ryqg.jiaofu.domain.model.Option;
 import com.ryqg.jiaofu.domain.pojo.Role;
 import com.ryqg.jiaofu.domain.vo.RoleVO;
 import com.ryqg.jiaofu.utils.SecurityUtils;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@AllArgsConstructor
 public class RoleServiceImpl extends ServiceImpl<RoleMapper, RoleConverter, Role, RoleDTO, RoleVO> implements RoleService {
+    private final UserRoleService userRoleService;
+
     @Override
     public PageResult<RoleVO> pageQuery(RolePageQuery rolePageQuery) {
         Page<Role> page = Page.of(rolePageQuery.getPageNumber(), rolePageQuery.getPageSize());
@@ -59,5 +68,13 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, RoleConverter, Role
                 .orderByAsc(Role::getSort);
         List<Role> roles = baseMapper.selectList(queryWrapper);
         return baseConverter.toOptions(roles);
+    }
+
+    @Transactional
+    @Override
+    public int delete(String ids) {
+        Assert.isTrue(StrUtil.isNotBlank(ids), "无删除的数据");
+        userRoleService.deleteByRoleIds(ids);
+        return baseMapper.deleteBatchIds(Arrays.stream(ids.split(",")).collect(Collectors.toList()));
     }
 }

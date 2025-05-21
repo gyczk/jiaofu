@@ -8,7 +8,9 @@ import com.ryqg.jiaofu.domain.pojo.UserRole;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -31,4 +33,20 @@ public class UserRoleServiceImpl implements UserRoleService {
     public boolean hasAssignedUsers(String roleId) {
         return false;
     }
+
+    @Override
+    public void deleteByUserIds(String userIds) {
+        QueryWrapper<UserRole> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().in(UserRole::getUserId, Arrays.stream(userIds.split(",")).collect(Collectors.toList()));
+        userRoleMapper.delete(queryWrapper);
+    }
+
+    @Override
+    public void deleteByRoleIds(String roleIds) {
+        QueryWrapper<UserRole> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().in(UserRole::getRoleId,Arrays.stream(roleIds.split(",")).collect(Collectors.toList()));
+        userRoleMapper.delete(queryWrapper);
+    }
+
+
 }

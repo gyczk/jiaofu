@@ -45,7 +45,7 @@ public abstract class ServiceImpl<M extends BaseMapper<Entity>, C extends BaseCo
     @Transactional
     @Override
     public int delete(String ids) {
-        Assert.isTrue(StrUtil.isNotBlank(ids), "删除的用户数据为空");
+        Assert.isTrue(StrUtil.isNotBlank(ids), "无删除的数据");
         return baseMapper.deleteBatchIds(Arrays.stream(ids.split(",")).collect(Collectors.toList()));
     }
 

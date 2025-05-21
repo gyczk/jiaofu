@@ -19,4 +19,20 @@ public interface UserRoleService {
      * @return true：已分配 false：未分配
      */
     boolean hasAssignedUsers(String roleId);
+
+    /**
+     * 根据userId删除
+     *
+     * @param userIds 用户ID
+     * @return
+     */
+    void deleteByUserIds(String userIds);
+
+    /**
+     * 根据roleId删除
+     *
+     * @param roleIds 角色ID
+     * @return
+     */
+    void deleteByRoleIds(String roleIds);
 }
