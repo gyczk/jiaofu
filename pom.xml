@@ -39,9 +39,15 @@
 <!--        <druid-spring-boot-3-starter.version>1.2.19</druid-spring-boot-3-starter.version>-->
         <mysql-connector-j.version>8.3.0</mysql-connector-j.version>
         <redisson.version>3.40.2</redisson.version>
+        <jakarta.annotation-api.version>2.1.1</jakarta.annotation-api.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+            <version>${jakarta.annotation-api.version}</version>
+        </dependency>
         <!-- redisson 分布式锁 -->
         <dependency>
             <groupId>org.redisson</groupId>
