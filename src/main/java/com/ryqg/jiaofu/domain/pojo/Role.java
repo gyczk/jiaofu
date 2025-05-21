@@ -21,9 +21,6 @@ public class Role extends BaseModel {
     // 角色状态(1-正常 0-停用)
     private Integer status;
 
-    // 数据权限(1-所有数据 2-部门及子部门数据 3-本部门数据 4-本人数据)
-    private Integer dataScope;
-
     // 创建人 ID
     private String createBy;
 

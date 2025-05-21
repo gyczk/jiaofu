@@ -2,6 +2,7 @@ package com.ryqg.jiaofu.business.service.impl;
 
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.db.sql.Direction;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ryqg.jiaofu.business.common.PageResult;
@@ -30,16 +31,24 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, RoleConverter, Role
     public PageResult<RoleVO> pageQuery(RolePageQuery rolePageQuery) {
         Page<Role> page = Page.of(rolePageQuery.getPageNumber(), rolePageQuery.getPageSize());
         QueryWrapper<Role> queryWrapper = new QueryWrapper<>();
+        LambdaQueryWrapper<Role> lambda = queryWrapper.lambda();
         if (ArrayUtil.isNotEmpty(rolePageQuery.getName())){
-            queryWrapper.lambda().like(StringUtils.isNotBlank(rolePageQuery.getName()), Role::getName, rolePageQuery.getName());
+            lambda.like(StringUtils.isNotBlank(rolePageQuery.getName()), Role::getName, rolePageQuery.getName());
             }
         if (ArrayUtil.isNotEmpty(rolePageQuery.getOrders())) {
             Arrays.stream(rolePageQuery.getOrders()).forEach(item -> {
-                queryWrapper.orderBy(true, Direction.ASC.equals(item.getDirection()), item.getField());
+                queryWrapper.orderBy(true,Direction.ASC.equals(item.getDirection()), item.getField());
             });
+        } else {
+            lambda.orderByAsc(Role::getSort);
         }
         page = baseMapper.selectPage(page,queryWrapper);
         return baseConverter.toPageResult(page);
+    }
+
+    @Override
+    public RoleVO getRoleForm(String roleId) {
+        return this.findById(roleId);
     }
 
     @Override

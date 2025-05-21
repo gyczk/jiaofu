@@ -13,4 +13,6 @@ public interface RoleService extends IBaseService<RoleDTO, RoleVO> {
     List<Option<String>> getRoleOptions();
 
     PageResult<RoleVO> pageQuery(RolePageQuery rolePageQuery);
+
+    RoleVO getRoleForm(String roleId);
 }
