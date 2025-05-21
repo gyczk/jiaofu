@@ -4,6 +4,12 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.ryqg.jiaofu.business.mapper.RoleMenuMapper">
+    <insert id="batchInsert">
+        insert into sys_roles_menus values
+        <foreach collection="menuIds" item="menuId" separator=",">
+            (#{roleId}, #{menuId})
+        </foreach>
+    </insert>
 
     <select id="listMenuIdsByRoleId" resultType="java.lang.String">
         SELECT menu_id

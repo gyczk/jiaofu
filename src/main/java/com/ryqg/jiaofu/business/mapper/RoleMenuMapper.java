@@ -10,4 +10,6 @@ import java.util.List;
 @Mapper
 public interface RoleMenuMapper extends BaseMapper<RoleMenu> {
     List<String> listMenuIdsByRoleId(@Param("roleId") String roleId);
+
+    void batchInsert(@Param("roleId")String roleId, @Param("menuIds")List<String> menuIds);
 }

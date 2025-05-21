@@ -9,10 +9,7 @@ import com.ryqg.jiaofu.domain.dto.RoleDTO;
 import com.ryqg.jiaofu.domain.model.Option;
 import com.ryqg.jiaofu.domain.vo.RoleVO;
 import io.swagger.v3.oas.annotations.Parameter;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -44,5 +41,14 @@ public class RoleController extends BaseController<RoleService, RoleDTO, RoleVO>
     ) {
         List<String> menuIds = baseService.getRoleMenuIds(roleId);
         return Result.success(menuIds);
+    }
+
+    @PutMapping("/{roleId}/menus")
+    public Result<Void> assignMenusToRole(
+            @PathVariable String roleId,
+            @RequestBody List<String> menuIds
+    ) {
+        baseService.assignMenusToRole(roleId, menuIds);
+        return Result.success();
     }
 }

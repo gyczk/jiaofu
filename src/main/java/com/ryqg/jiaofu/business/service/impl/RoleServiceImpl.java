@@ -2,6 +2,7 @@ package com.ryqg.jiaofu.business.service.impl;
 
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.sql.Direction;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -66,6 +67,19 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, RoleConverter, Role
     @Override
     public List<String> getRoleMenuIds(String roleId) {
         return roleMenuService.getMenuIds(roleId);
+    }
+
+    @Override
+    public void assignMenusToRole(String roleId, List<String> menuIds) {
+        Role role = baseMapper.selectById(roleId);
+        if (ObjectUtil.isNull(role)) {
+            throw new RuntimeException("角色不存在");
+        }
+        //先删除关联的菜单
+        roleMenuService.deleteByRoleIds(roleId);
+        // 再保存
+        roleMenuService.saveRoleMenus(roleId,menuIds);
+
     }
 
     @Override

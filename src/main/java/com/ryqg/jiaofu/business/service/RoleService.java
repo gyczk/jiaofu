@@ -17,4 +17,6 @@ public interface RoleService extends IBaseService<RoleDTO, RoleVO> {
     RoleVO getRoleForm(String roleId);
 
     List<String> getRoleMenuIds(String roleId);
+
+    void assignMenusToRole(String roleId, List<String> menuIds);
 }

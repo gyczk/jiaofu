@@ -1,6 +1,7 @@
 package com.ryqg.jiaofu.business.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ryqg.jiaofu.business.mapper.UserRoleMapper;
 import com.ryqg.jiaofu.business.service.UserRoleService;
@@ -43,8 +44,8 @@ public class UserRoleServiceImpl implements UserRoleService {
 
     @Override
     public void deleteByRoleIds(String roleIds) {
-        QueryWrapper<UserRole> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().in(UserRole::getRoleId,Arrays.stream(roleIds.split(",")).collect(Collectors.toList()));
+        LambdaQueryWrapper<UserRole> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.in(UserRole::getRoleId,Arrays.stream(roleIds.split(",")).collect(Collectors.toList()));
         userRoleMapper.delete(queryWrapper);
     }
 
