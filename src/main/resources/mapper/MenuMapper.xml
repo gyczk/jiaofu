@@ -29,7 +29,7 @@
         <choose>
             <when test="roleCodes != null and roleCodes.size() > 0">
                 AND t3.code IN
-                <foreach item="roleCode" open="(" close=")" separator="," collection="roleCodes" >
+                <foreach item="roleCode" open="(" close=")" separator="," collection="roleCodes">
                     #{roleCode}
                 </foreach>
             </when>

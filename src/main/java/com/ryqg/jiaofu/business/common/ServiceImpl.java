@@ -30,23 +30,23 @@ public abstract class ServiceImpl<M extends BaseMapper<Entity>, C extends BaseCo
 
     @Transactional
     @Override
-    public int save(DTO dto) {
+    public void save(DTO dto) {
         Entity entity = baseConverter.toEntity(dto);
-        return baseMapper.insert(entity);
+        baseMapper.insert(entity);
     }
 
     @Transactional
     @Override
-    public int update(DTO dto) {
+    public void update(DTO dto) {
         Entity entity = baseConverter.toEntity(dto);
-        return baseMapper.updateById(entity);
+        baseMapper.updateById(entity);
     }
 
     @Transactional
     @Override
-    public int delete(String ids) {
+    public void delete(String ids) {
         Assert.isTrue(StrUtil.isNotBlank(ids), "无删除的数据");
-        return baseMapper.deleteBatchIds(Arrays.stream(ids.split(",")).collect(Collectors.toList()));
+        baseMapper.deleteBatchIds(Arrays.stream(ids.split(",")).collect(Collectors.toList()));
     }
 
 }

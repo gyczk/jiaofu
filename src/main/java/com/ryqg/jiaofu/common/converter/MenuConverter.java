@@ -11,4 +11,10 @@ public interface MenuConverter extends BaseConverter<Menu, MenuDTO, MenuVO>{
     @Override
     @Mapping(target = "params", ignore = true)
     MenuVO toVO(Menu menu);
+
+    @Mapping(target = "params", ignore = true)
+    MenuDTO toDTO(Menu Menu);
+
+    @Mapping(target = "params", ignore = true)
+    Menu toEntity(MenuDTO menuDTO);
 }

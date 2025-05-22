@@ -44,10 +44,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserConverter, User
     private final UserRoleService userRoleService;
 
     @Override
-    public int update(UserDTO userDTO) {
+    public void update(UserDTO userDTO) {
         List<String> roleIds = userDTO.getRoleIds();
         userRoleService.saveUserRoles(userDTO.getId(), roleIds);
-        return super.update(userDTO);
+        super.update(userDTO);
     }
 
     @Override
@@ -100,9 +100,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserConverter, User
 
     @Transactional
     @Override
-    public int delete(String ids) {
+    public void delete(String ids) {
         Assert.isTrue(StrUtil.isNotBlank(ids), "无删除的数据");
         userRoleService.deleteByUserIds(ids);
-        return baseMapper.deleteBatchIds(Arrays.stream(ids.split(",")).collect(Collectors.toList()));
+        baseMapper.deleteBatchIds(Arrays.stream(ids.split(",")).collect(Collectors.toList()));
     }
 }

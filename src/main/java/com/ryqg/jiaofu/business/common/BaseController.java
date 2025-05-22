@@ -30,30 +30,21 @@ public abstract class BaseController<M extends IBaseService<DTO, VO>,
     // 创建
     @PostMapping
     public Result<Void> create(@RequestBody DTO dto) {
-        int flag = baseService.save(dto);
-        if (flag != 1) {
-            return Result.failed(ResultCode.DATA_INSERT_ERROR);
-        }
+        baseService.save(dto);
         return Result.success();
     }
 
     // 更新
     @PutMapping
     public Result<Void> update(@RequestBody DTO dto) {
-        int flag = baseService.update(dto);
-        if (flag != 1) {
-            return Result.failed(ResultCode.DATA_UPDATE_ERROR);
-        }
+        baseService.update(dto);
         return Result.success();
     }
 
     // 删除
     @DeleteMapping("/{ids}")
     public Result<Void> delete(@PathVariable String ids) {
-        int flag = baseService.delete(ids);
-        if (flag <= 0) {
-            return Result.failed(ResultCode.DATA_DELETE_ERROR);
-        }
+        baseService.delete(ids);
         return Result.success();
     }
 }

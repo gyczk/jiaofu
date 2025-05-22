@@ -94,9 +94,9 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, RoleConverter, Role
 
     @Transactional
     @Override
-    public int delete(String ids) {
+    public void delete(String ids) {
         Assert.isTrue(StrUtil.isNotBlank(ids), "无删除的数据");
         userRoleService.deleteByRoleIds(ids);
-        return baseMapper.deleteBatchIds(Arrays.stream(ids.split(",")).collect(Collectors.toList()));
+        baseMapper.deleteBatchIds(Arrays.stream(ids.split(",")).collect(Collectors.toList()));
     }
 }

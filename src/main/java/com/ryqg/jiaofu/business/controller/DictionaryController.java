@@ -33,8 +33,7 @@ public class DictionaryController extends BaseController<DictionaryService, Dict
     @Operation(summary = "字典项列表")
     @GetMapping("/{dictCode}/items")
     public Result<List<Option<String>>> getDictItems(
-            @Parameter(description = "字典编码") @PathVariable String dictCode
-    ) {
+            @Parameter(description = "字典编码") @PathVariable String dictCode) {
         List<Option<String>> list = dictionaryItemService.getDictItems(dictCode);
         return Result.success(list);
     }

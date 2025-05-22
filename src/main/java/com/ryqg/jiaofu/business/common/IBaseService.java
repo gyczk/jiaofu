@@ -6,9 +6,9 @@ import com.ryqg.jiaofu.domain.vo.BaseVO;
 public interface IBaseService<DTO extends BaseDTO,VO extends BaseVO> {
     VO findById(String id);
 
-    int save(DTO dto);
+    void save(DTO dto);
 
-    int update(DTO dto);
+    void update(DTO dto);
 
-    int delete(String ids);
+    void delete(String ids);
 }

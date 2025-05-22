@@ -1,10 +1,13 @@
 package com.ryqg.jiaofu.business.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ryqg.jiaofu.business.common.ServiceImpl;
@@ -96,6 +99,13 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, MenuConverter, Menu
     }
 
     @Override
+    public void delete(String id) {
+        LambdaQueryWrapper<Menu> lambdaQueryWrapper = new LambdaQueryWrapper<Menu>().eq(Menu::getId, id).or()
+                .apply("CONCAT (',',tree_path,',') LIKE CONCAT('%,',{0},',%')", id);
+        baseMapper.delete(lambdaQueryWrapper);
+    }
+
+    @Override
     public List<MenuVO> listMenus(MenuPageQuery menuPageQuery) {
         QueryWrapper<Menu> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda().like(StringUtils.isNotBlank(menuPageQuery.getName()), Menu::getName, menuPageQuery.getName())
@@ -122,6 +132,87 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, MenuConverter, Menu
                 .flatMap(rootId -> buildMenuTree(rootId, menus).stream())
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public void update(MenuDTO menuDTO) {
+        Integer menuType = menuDTO.getType();
+
+        if (MenuTypeEnum.CATALOG.getValue().equals(menuType)) {  // 如果是目录
+            String path = menuDTO.getRoutePath();
+            if ("0".equals(menuDTO.getParentId()) && !path.startsWith("/")) {
+                menuDTO.setRoutePath("/" + path); // 一级目录需以 / 开头
+            }
+            menuDTO.setComponent("Layout");
+        } else if (MenuTypeEnum.EXTERNAL_LINK.getValue().equals(menuType)) {
+            // 外链菜单组件设置为 null
+            menuDTO.setComponent(null);
+        }
+        if (Objects.equals(menuDTO.getParentId(), menuDTO.getId())) {
+            throw new RuntimeException("父级菜单不能为当前菜单");
+        }
+        Menu entity = baseConverter.toEntity(menuDTO);
+        String treePath = generateMenuTreePath(menuDTO.getParentId());
+        entity.setTreePath(treePath);
+
+        List<KeyValue> params = menuDTO.getParams();
+        // 路由参数 [{key:"id",value:"1"}，{key:"name",value:"张三"}] 转换为 [{"id":"1"},{"name":"张三"}]
+        if (CollectionUtil.isNotEmpty(params)) {
+            entity.setParams(JSONUtil.toJsonStr(params.stream()
+                    .collect(Collectors.toMap(KeyValue::getKey, KeyValue::getValue))));
+        } else {
+            entity.setParams(null);
+        }
+        // 新增类型为菜单时候 路由名称唯一
+        if (MenuTypeEnum.MENU.getValue().equals(menuType)) {
+            Assert.isFalse(baseMapper.exists(new LambdaQueryWrapper<Menu>()
+                    .eq(Menu::getRouteName, entity.getRouteName())
+                    .ne(menuDTO.getId() != null, Menu::getId, menuDTO.getId())
+            ), "路由名称已存在");
+        } else {
+            // 其他类型时 给路由名称赋值为空
+            entity.setRouteName(null);
+        }
+
+        if (ObjectUtil.isNull(entity.getId())) {
+            baseMapper.insert(entity);
+        } else {
+            baseMapper.updateById(entity);
+        }
+//        if (result) {
+//            // 编辑刷新角色权限缓存
+////            if (menuDTO.getId() != null) {
+////                roleMenuService.refreshRolePermsCache();
+////            }
+//        }
+        // 修改菜单如果有子菜单，则更新子菜单的树路径
+        updateChildrenTreePath(entity.getId(), treePath);
+    }
+
+    private String generateMenuTreePath(String parentId) {
+        if (SecurityConstants.ROOT_NODE_ID.equals(parentId)) {
+            return parentId;
+        } else {
+            Menu parent = baseMapper.selectById(parentId);
+            return parent != null ? parent.getTreePath() + "," + parent.getId() : null;
+        }
+    }
+
+    private void updateChildrenTreePath(String id, String treePath) {
+        List<Menu> children = baseMapper.selectList(new LambdaQueryWrapper<Menu>().eq(Menu::getParentId, id));
+        if (CollectionUtil.isNotEmpty(children)) {
+            // 子菜单的树路径等于父菜单的树路径加上父菜单ID
+            String childTreePath = treePath + "," + id;
+            baseMapper.update(new LambdaUpdateWrapper<Menu>()
+                    .eq(Menu::getParentId, id)
+                    .set(Menu::getTreePath, childTreePath)
+            );
+            for (Menu child : children) {
+                // 递归更新子菜单
+                updateChildrenTreePath(child.getId(), childTreePath);
+            }
+        }
+    }
+
 
     @Override
     public List<RouteVO> getCurrentUserRoutes() {
