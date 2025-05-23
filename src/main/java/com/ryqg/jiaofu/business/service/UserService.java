@@ -16,4 +16,8 @@ public interface UserService extends IBaseService<UserDTO, UserVO> {
     UserVO getUserForm(String userId);
 
     PageResult<UserVO> pageQuery(UserPageQuery userPageQuery);
+
+    UserVO getUserProfile();
+
+    void updateProfile(UserDTO userDTO);
 }

@@ -20,5 +20,7 @@ public class UserVO  extends BaseVO{
 
     private Integer status;
 
+    private String avatar;
+
     private List<String> roleIds;
 }

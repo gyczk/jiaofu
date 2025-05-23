@@ -23,6 +23,8 @@ public class User extends BaseModel {
 
     private float coin;
 
+    private String avatar;
+
     // (1:启用；0:禁用)
     private Integer status;
 }

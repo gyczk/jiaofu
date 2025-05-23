@@ -51,6 +51,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserConverter, User
     }
 
     @Override
+    public UserVO getUserProfile() {
+        String userId = SecurityUtils.getUserId();
+        User user = baseMapper.selectById(userId);
+        return baseConverter.toVO(user);
+    }
+
+    @Override
+    public void updateProfile(UserDTO userDTO) {
+        String userId = SecurityUtils.getUserId();
+        User user = baseConverter.toEntity(userDTO);
+        user.setId(userId);
+        baseMapper.updateById(user);
+    }
+
+    @Override
     public CurrentUserVO getMe() {
         String phone = SecurityUtils.getPhone();
         User user = baseMapper.getUser(phone);

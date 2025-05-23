@@ -17,6 +17,8 @@ public class CurrentUserVO implements Serializable {
 
     private String phone;
 
+    private String avatar;
+
     private Set<String> roles;
 
     private Set<String> perms;

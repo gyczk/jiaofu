@@ -22,5 +22,7 @@ public class UserDTO extends BaseDTO{
 
     private Integer status;
 
+    private String avatar;
+
     private List<String> roleIds;
 }
