@@ -17,4 +17,6 @@ public class UserPageQuery extends Page {
     private Integer status;
 
     private LocalDateTime[] createTime;
+
+    Boolean isRoot;
 }

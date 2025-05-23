@@ -1,12 +1,7 @@
 package com.ryqg.jiaofu.business.service.impl;
 
 import cn.hutool.core.lang.Assert;
-import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.db.sql.Direction;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ryqg.jiaofu.business.common.PageResult;
 import com.ryqg.jiaofu.business.common.ServiceImpl;
@@ -25,8 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -50,7 +43,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserConverter, User
     @Override
     public PageResult<UserVO> pageQuery(UserPageQuery userPageQuery) {
         Page<User> page = Page.of(userPageQuery.getPageNumber(), userPageQuery.getPageSize());
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+
+        boolean isRoot = SecurityUtils.isRoot();
+        userPageQuery.setIsRoot(isRoot);
+        Page<User> userPage = baseMapper.pageQuery(page,userPageQuery);
+
+
+        /*QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         LambdaQueryWrapper<User> lambda = queryWrapper.lambda();
         if (ArrayUtil.isNotEmpty(userPageQuery.getPhone())){
             lambda.like(User::getPhone, userPageQuery.getPhone());
@@ -68,9 +67,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserConverter, User
         if (ArrayUtil.isNotEmpty(userPageQuery.getOrders())) {
             Arrays.stream(userPageQuery.getOrders()).forEach(
                     item -> queryWrapper.orderBy(true, Direction.ASC.equals(item.getDirection()), item.getField()));
-        }
-        page = baseMapper.selectPage(page, queryWrapper);
-        return baseConverter.toPageResult(page);
+        }*/
+//        page = baseMapper.selectPage(page, queryWrapper);
+        return baseConverter.toPageResult(userPage);
     }
 
     @Override

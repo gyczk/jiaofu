@@ -55,6 +55,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, RoleConverter, Role
         } else {
             lambda.orderByAsc(Role::getSort);
         }
+        lambda.ne(!SecurityUtils.isRoot(),Role::getCode,SecurityConstants.ROOT_ROLE_CODE);
         page = baseMapper.selectPage(page,queryWrapper);
         return baseConverter.toPageResult(page);
     }

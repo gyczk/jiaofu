@@ -63,4 +63,37 @@
         from sys_users
         where id = #{userId}
     </select>
+    <select id="pageQuery" resultType="User">
+        select u.id,u.user_name,u.phone,u.doc_num,u.coin,u.create_time,u.status
+        from sys_users u
+        <where>
+            <if test="!pageQuery.isRoot">
+                AND NOT EXISTS (
+                SELECT
+                1
+                FROM sys_users_roles ur
+                INNER JOIN sys_roles r ON ur.role_id = r.id
+                WHERE
+                ur.user_id = u.id
+                AND r.code = '${@com.ryqg.jiaofu.common.constants.SecurityConstants@ROOT_ROLE_CODE}'
+                )
+            </if>
+            <if test="pageQuery.phone !=null and pageQuery.phone.trim() neq ''">
+                and u.phone = #{pageQuery.phone}
+            </if>
+            <if test="pageQuery.status !=null">
+                and u.status = #{pageQuery.status}
+            </if>
+
+            <if test="pageQuery.createTime !=null and pageQuery.createTime.length >=1">
+                <bind name="startDate" value="pageQuery.createTime[0]"/>
+                and u.create_time <![CDATA[ >= ]]> #{startDate}
+            </if>
+            <if test="pageQuery.createTime !=null and pageQuery.createTime.length >=2">
+                <bind name="endDate" value="@com.ryqg.jiaofu.utils.DateUtils@getEndOfDay(pageQuery.createTime[1])"/>
+                and u.create_time <![CDATA[ <= ]]> #{endDate}
+            </if>
+        </where>
+
+    </select>
 </mapper>
