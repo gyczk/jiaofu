@@ -22,7 +22,6 @@ import com.ryqg.jiaofu.domain.vo.UserVO;
 import com.ryqg.jiaofu.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,8 +36,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl extends ServiceImpl<UserMapper, UserConverter, User, UserDTO, UserVO> implements UserService {
-    private final PasswordEncoder passwordEncoder;
-
     private final PermissionCacheService permissionCacheService;
 
     private final UserRoleService userRoleService;
@@ -69,9 +66,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserConverter, User
             lambda.le(User::getCreateTime, userPageQuery.getCreateTime()[1].toLocalDate().atTime(LocalTime.MAX));
         }
         if (ArrayUtil.isNotEmpty(userPageQuery.getOrders())) {
-            Arrays.stream(userPageQuery.getOrders()).forEach(item -> {
-                queryWrapper.orderBy(true, Direction.ASC.equals(item.getDirection()), item.getField());
-            });
+            Arrays.stream(userPageQuery.getOrders()).forEach(
+                    item -> queryWrapper.orderBy(true, Direction.ASC.equals(item.getDirection()), item.getField()));
         }
         page = baseMapper.selectPage(page, queryWrapper);
         return baseConverter.toPageResult(page);

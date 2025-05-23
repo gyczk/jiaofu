@@ -13,6 +13,7 @@ public abstract class BaseController<M extends IBaseService<DTO, VO>,
         DTO extends BaseDTO,
         VO extends BaseVO> {
 
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     protected M baseService;
 

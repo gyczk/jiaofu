@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@SuppressWarnings("SpellCheckingInspection")
 @RequestMapping("/api/v1/dicts")
 @RequiredArgsConstructor
 public class DictionaryController extends BaseController<DictionaryService, DictionaryDTO, DictionaryVO> {

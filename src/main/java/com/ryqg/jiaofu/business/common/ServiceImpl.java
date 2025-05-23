@@ -15,9 +15,11 @@ import java.util.stream.Collectors;
 public abstract class ServiceImpl<M extends BaseMapper<Entity>, C extends BaseConverter<Entity,DTO,VO>,Entity
         extends BaseModel,DTO extends BaseDTO,VO extends BaseVO> implements IBaseService<DTO,VO>{
 
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     protected M baseMapper;
 
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     protected C baseConverter;
 

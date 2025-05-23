@@ -50,9 +50,8 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, RoleConverter, Role
             lambda.like(StringUtils.isNotBlank(rolePageQuery.getName()), Role::getName, rolePageQuery.getName());
             }
         if (ArrayUtil.isNotEmpty(rolePageQuery.getOrders())) {
-            Arrays.stream(rolePageQuery.getOrders()).forEach(item -> {
-                queryWrapper.orderBy(true,Direction.ASC.equals(item.getDirection()), item.getField());
-            });
+            Arrays.stream(rolePageQuery.getOrders()).forEach(
+                    item -> queryWrapper.orderBy(true,Direction.ASC.equals(item.getDirection()), item.getField()));
         } else {
             lambda.orderByAsc(Role::getSort);
         }

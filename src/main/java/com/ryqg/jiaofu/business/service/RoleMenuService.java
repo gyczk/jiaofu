@@ -11,7 +11,7 @@ public interface RoleMenuService {
      * 根据roleId删除
      *
      * @param roleIds 角色ID
-     * @return
+     *
      */
     void deleteByRoleIds(String roleIds);
 
