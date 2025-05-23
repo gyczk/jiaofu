@@ -8,6 +8,7 @@ import com.ryqg.jiaofu.config.security.token.AuthenticationToken;
 import com.ryqg.jiaofu.config.security.token.TokenManager;
 import com.ryqg.jiaofu.domain.dto.UserRegisterDTO;
 import com.ryqg.jiaofu.domain.pojo.User;
+import com.ryqg.jiaofu.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -58,5 +59,13 @@ public class AuthServiceImpl implements AuthService {
     public int save(UserRegisterDTO userRegisterDTO) {
         User user = userConverter.toEntity(userRegisterDTO,passwordEncoder);
         return userMapper.insert(user);
+    }
+
+    @Override
+    public void logout() {
+        String token = SecurityUtils.getTokenFromRequest();
+        tokenManager.invalidateToken(token);
+        // 此处请求url 不拦截，不会有context
+        SecurityContextHolder.clearContext();
     }
 }

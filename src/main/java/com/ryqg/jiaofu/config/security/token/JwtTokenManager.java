@@ -236,7 +236,7 @@ public class JwtTokenManager implements TokenManager {
 
     @Override
     public void invalidateToken(String token) {
-        TokenManager.super.invalidateToken(token);
+        redisTemplate.delete(formatRedisKey(RedisConstants.Auth.ACCESS_TOKEN_USER, token));
     }
 
     /**

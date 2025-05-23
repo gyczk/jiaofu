@@ -5,9 +5,13 @@ import cn.hutool.core.util.StrUtil;
 import com.ryqg.jiaofu.common.constants.SecurityConstants;
 import com.ryqg.jiaofu.config.security.UserDetailsImpl;
 import com.ryqg.jiaofu.domain.model.UserCredentials;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -74,4 +78,16 @@ public class SecurityUtils {
     }
 
 
+    public static String getUserId() {
+        UserCredentials userCredentials = getUser().map(UserDetailsImpl::getUserCredentials).orElse(null);
+        if (userCredentials != null) {
+            return userCredentials.getId();
+        }
+        return null;
+    }
+
+    public static String getTokenFromRequest() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        return request.getHeader(HttpHeaders.AUTHORIZATION);
+    }
 }

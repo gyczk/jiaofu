@@ -9,4 +9,6 @@ public interface AuthService {
     AuthenticationToken refreshToken(String refreshToken);
 
     int save(UserRegisterDTO userRegisterDTO);
+
+    void logout();
 }

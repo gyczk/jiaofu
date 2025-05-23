@@ -51,4 +51,10 @@ public class AuthController {
             return Result.failed(ResultCode.USER_REGISTRATION_ERROR);
         }
     }
+
+    @DeleteMapping("/logout")
+    public Result<Void> logout() {
+        authService.logout();
+        return Result.success();
+    }
 }
