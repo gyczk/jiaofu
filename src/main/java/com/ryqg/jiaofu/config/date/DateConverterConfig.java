@@ -52,9 +52,6 @@ public class DateConverterConfig {
     private static final DateTimeFormatter LOCAL_DATE_FORMATTER = DateTimeFormatter.ofPattern(LOCAL_DATE_FORMAT);
     private static final DateTimeFormatter LOCAL_TIME_FORMATTER = DateTimeFormatter.ofPattern(LOCAL_TIME_FORMAT);
 
-    // 统一异常提示模板
-    private static final String INVALID_DATE_FORMAT_TEMPLATE = "无效的日期格式，预期格式: %s";
-
     // json格式
     @Bean
     public Jackson2ObjectMapperBuilderCustomizer jackson2ObjectMapperBuilderCustomizer() {
