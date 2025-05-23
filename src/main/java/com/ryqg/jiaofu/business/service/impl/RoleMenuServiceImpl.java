@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ryqg.jiaofu.business.mapper.RoleMenuMapper;
 import com.ryqg.jiaofu.business.service.RoleMenuService;
 import com.ryqg.jiaofu.domain.pojo.RoleMenu;
+import com.ryqg.jiaofu.domain.vo.RolePermsVO;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -34,5 +35,10 @@ public class RoleMenuServiceImpl implements RoleMenuService {
         if (CollectionUtil.isNotEmpty(menuIds)) {
             roleMenuMapper.batchInsert(roleId,menuIds);
         }
+    }
+
+    @Override
+    public List<RolePermsVO> getRolePermsList(String roleId) {
+        return roleMenuMapper.getRolePermsList(roleId);
     }
 }

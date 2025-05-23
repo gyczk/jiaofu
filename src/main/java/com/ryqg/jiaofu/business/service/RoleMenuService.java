@@ -1,5 +1,7 @@
 package com.ryqg.jiaofu.business.service;
 
+import com.ryqg.jiaofu.domain.vo.RolePermsVO;
+
 import java.util.List;
 
 public interface RoleMenuService {
@@ -14,4 +16,6 @@ public interface RoleMenuService {
     void deleteByRoleIds(String roleIds);
 
     void saveRoleMenus(String roleId, List<String> menuIds);
+
+    List<RolePermsVO> getRolePermsList(String roleCode);
 }

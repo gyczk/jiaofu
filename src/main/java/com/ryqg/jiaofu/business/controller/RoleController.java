@@ -43,9 +43,7 @@ public class RoleController extends BaseController<RoleService, RoleDTO, RoleVO>
     }
 
     @PutMapping("/{roleId}/menus")
-    public Result<Void> assignMenusToRole(
-            @PathVariable String roleId,
-            @RequestBody List<String> menuIds) {
+    public Result<Void> assignMenusToRole(@PathVariable String roleId, @RequestBody List<String> menuIds) {
         baseService.assignMenusToRole(roleId, menuIds);
         return Result.success();
     }

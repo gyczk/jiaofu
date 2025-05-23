@@ -30,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -39,6 +38,8 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, RoleConverter, Role
     private final UserRoleService userRoleService;
 
     private final RoleMenuService roleMenuService;
+
+    private final PermissionCacheService permissionCacheService;
 
     @Override
     public PageResult<RoleVO> pageQuery(RolePageQuery rolePageQuery) {
@@ -79,7 +80,8 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, RoleConverter, Role
         roleMenuService.deleteByRoleIds(roleId);
         // 再保存
         roleMenuService.saveRoleMenus(roleId,menuIds);
-
+        // 刷新权限缓存
+        permissionCacheService.refreshPermissions(role.getCode());
     }
 
     @Override
@@ -96,7 +98,23 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, RoleConverter, Role
     @Override
     public void delete(String ids) {
         Assert.isTrue(StrUtil.isNotBlank(ids), "无删除的数据");
-        userRoleService.deleteByRoleIds(ids);
-        baseMapper.deleteBatchIds(Arrays.stream(ids.split(",")).collect(Collectors.toList()));
+        List<String> roleIdList = Arrays.stream(ids.split(",")).toList();
+        // 刷新权限缓存
+        for (String roleId : roleIdList) {
+            Role role = baseMapper.selectById(roleId);
+            if (ObjectUtil.isNotNull(role)) {
+                permissionCacheService.refreshPermissions(role.getCode());
+                userRoleService.deleteByRoleIds(role.getId());
+                baseMapper.deleteById(role.getId());
+            }
+
+        }
+    }
+
+    @Override
+    public void update(RoleDTO dto) {
+        Role role = baseConverter.toEntity(dto);
+        baseMapper.updateById(role);
+        permissionCacheService.refreshPermissions(role.getCode());
     }
 }

@@ -4,6 +4,14 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.ryqg.jiaofu.business.mapper.RoleMenuMapper">
+    <!-- 权限和拥有权限的角色的映射 -->
+    <resultMap id="RolePermsMap" type="RolePermsVO">
+        <result property="roleCode" column="role_code"/>
+        <collection property="perms" ofType="string" javaType="java.util.Set">
+            <result column="perm"/>
+        </collection>
+    </resultMap>
+
     <insert id="batchInsert">
         insert into sys_roles_menus values
         <foreach collection="menuIds" item="menuId" separator=",">
@@ -15,5 +23,21 @@
         SELECT menu_id
         FROM sys_roles_menus
         WHERE role_id = #{roleId}
+    </select>
+    <select id="getRolePermsList" resultType="RolePermsVO" resultMap="RolePermsMap">
+        SELECT
+        m.perm,
+        r.`code` role_code
+        FROM
+        `sys_roles_menus` rm
+        INNER JOIN sys_roles r ON rm.role_id = r.id AND r.is_deleted = 0 AND r.`status` = 1
+        INNER JOIN sys_menus m ON rm.menu_id = m.id
+        WHERE
+        m.type = '${@com.ryqg.jiaofu.common.constants.MenuTypeEnum@BUTTON.getValue()}'
+        <if test="roleCode!=null and roleCode.trim() neq ''">
+            AND r.`code` = #{roleCode}
+        </if>
+
+
     </select>
 </mapper>

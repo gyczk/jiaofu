@@ -25,6 +25,7 @@ import com.ryqg.jiaofu.domain.pojo.Menu;
 import com.ryqg.jiaofu.domain.vo.MenuVO;
 import com.ryqg.jiaofu.domain.vo.RouteVO;
 import com.ryqg.jiaofu.utils.SecurityUtils;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -34,7 +35,9 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@AllArgsConstructor
 public class MenuServiceImpl extends ServiceImpl<MenuMapper, MenuConverter, Menu, MenuDTO, MenuVO> implements MenuService {
+    private final PermissionCacheService permissionCacheService;
     @Override
     public List<Option<String>> listMenuOptions(boolean onlyParent) {
         LambdaQueryWrapper<Menu> menuLambdaQueryWrapper = new LambdaQueryWrapper<>();
@@ -70,8 +73,6 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, MenuConverter, Menu
                 }
             }
         }
-
-
         return menuVO;
     }
 
@@ -103,6 +104,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, MenuConverter, Menu
         LambdaQueryWrapper<Menu> lambdaQueryWrapper = new LambdaQueryWrapper<Menu>().eq(Menu::getId, id).or()
                 .apply("CONCAT (',',tree_path,',') LIKE CONCAT('%,',{0},',%')", id);
         baseMapper.delete(lambdaQueryWrapper);
+        permissionCacheService.refreshPermissions();
     }
 
     @Override
@@ -177,14 +179,11 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, MenuConverter, Menu
             baseMapper.insert(entity);
         } else {
             baseMapper.updateById(entity);
+            // 编辑刷新角色权限缓存
+            permissionCacheService.refreshPermissions();
         }
-//        if (result) {
-//            // 编辑刷新角色权限缓存
-////            if (menuDTO.getId() != null) {
-////                roleMenuService.refreshRolePermsCache();
-////            }
-//        }
-        // 修改菜单如果有子菜单，则更新子菜单的树路径
+
+        // 修改菜单如果有子菜单(菜单移动)，则更新子菜单的树路径
         updateChildrenTreePath(entity.getId(), treePath);
     }
 
