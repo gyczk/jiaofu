@@ -47,28 +47,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserConverter, User
         boolean isRoot = SecurityUtils.isRoot();
         userPageQuery.setIsRoot(isRoot);
         Page<User> userPage = baseMapper.pageQuery(page,userPageQuery);
-
-
-        /*QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        LambdaQueryWrapper<User> lambda = queryWrapper.lambda();
-        if (ArrayUtil.isNotEmpty(userPageQuery.getPhone())){
-            lambda.like(User::getPhone, userPageQuery.getPhone());
-        }
-        if (ObjectUtil.isNotNull(userPageQuery.getStatus())){
-            lambda.eq(User::getStatus, userPageQuery.getStatus());
-        }
-        LocalDateTime[] timeRangeArray = userPageQuery.getCreateTime();
-        if (ArrayUtil.isNotEmpty(timeRangeArray) && timeRangeArray.length >= 1) {
-            lambda.ge( User::getCreateTime,userPageQuery.getCreateTime()[0]);
-        }
-        if (ArrayUtil.isNotEmpty(timeRangeArray) && timeRangeArray.length >= 2) {
-            lambda.le(User::getCreateTime, userPageQuery.getCreateTime()[1].toLocalDate().atTime(LocalTime.MAX));
-        }
-        if (ArrayUtil.isNotEmpty(userPageQuery.getOrders())) {
-            Arrays.stream(userPageQuery.getOrders()).forEach(
-                    item -> queryWrapper.orderBy(true, Direction.ASC.equals(item.getDirection()), item.getField()));
-        }*/
-//        page = baseMapper.selectPage(page, queryWrapper);
         return baseConverter.toPageResult(userPage);
     }
 
