@@ -67,6 +67,7 @@ security:
     - /ws/**                      # WebSocket接口
     - /druid/**
     - /doc
+    - /api/v1/pdf/**
     - /swagger-ui/**
     - /v3/api-docs/**
     - /webjars/**

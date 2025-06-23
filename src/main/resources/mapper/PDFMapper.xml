@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ryqg.jiaofu.web.mapper.PDFMapper">
+    <select id="selectViewByDocId" resultType="com.ryqg.jiaofu.domain.pojo.PDFView">
+        SELECT
+        id,pdf_id,html_content from sys_pdf_views
+        WHERE
+        pdf_id = #{docId}
+    </select>
+    <select id="selectPDFList" resultType="com.ryqg.jiaofu.domain.pojo.PDFInfo">
+        SELECT
+            id,name,total_page,author,coin,size,type,classify,views,downloads,cover_url,create_time
+        FROM sys_pdf_infos order by create_time desc limit 10
+    </select>
+</mapper>
