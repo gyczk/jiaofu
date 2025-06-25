@@ -293,7 +293,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, MenuConverter, Menu
         return routeVO;
     }
 
-    private List<MenuVO> buildMenuTree(String parentId, List<Menu> menuList) {
+   /* private List<MenuVO> buildMenuTree(String parentId, List<Menu> menuList) {
         return CollectionUtil.emptyIfNull(menuList)
                 .stream()
                 .filter(menu -> menu.getParentId().equals(parentId))
@@ -303,5 +303,29 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, MenuConverter, Menu
                     menuVO.setChildren(children);
                     return menuVO;
                 }).toList();
+    }*/
+
+    public List<MenuVO> buildMenuTree(String parentId, List<Menu> menuList) {
+        // 1. 将 Menu 转换为 MenuVO，并建立 ID 到 MenuVO 的映射
+        Map<String, MenuVO> menuMap = menuList.stream()
+                .map(baseConverter::toVO)
+                .peek(menuVO -> menuVO.setChildren(new ArrayList<>())) // 预先初始化 children 列表
+                .collect(Collectors.toMap(MenuVO::getId, v -> v,(existing, replacement) -> existing, // 处理键冲突的合并函数
+                LinkedHashMap::new ));// 指定有序 Map 实现
+
+        // 2. 构建菜单树结构
+        List<MenuVO> rootMenus = new ArrayList<>();
+        for (MenuVO menu : menuMap.values()) {
+            if (menu.getParentId().equals(parentId)) {
+                rootMenus.add(menu);
+            } else {
+                MenuVO parent = menuMap.get(menu.getParentId());
+                if (parent != null) {
+                    parent.getChildren().add(menu);
+                }
+            }
+        }
+
+        return rootMenus;
     }
 }
