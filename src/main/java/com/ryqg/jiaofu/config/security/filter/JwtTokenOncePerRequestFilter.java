@@ -12,11 +12,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.http.server.PathContainer;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.pattern.PathPattern;
+import org.springframework.web.util.pattern.PathPatternParser;
 
 import java.io.IOException;
 
@@ -52,7 +55,12 @@ public class JwtTokenOncePerRequestFilter extends OncePerRequestFilter {
     // 判断请求路径是否在白名单中
     private boolean isWhitelisted(String uri) {
         for (String pattern : securityProperties.getIgnoreUrls()) {
-            if (pattern.endsWith("/**")) {
+            PathPatternParser patternParser = PathPatternParser.defaultInstance;
+            PathPattern pathPattern = patternParser.parse(pattern);
+            if (pathPattern.matches(PathContainer.parsePath(uri))) {
+                return true;
+            }
+            /*if (pattern.endsWith("/**")) {
                 // 处理通配符路径
                 String basePattern = pattern.substring(0, pattern.length() - 3);
                 if (uri.startsWith(basePattern)) {
@@ -62,6 +70,7 @@ public class JwtTokenOncePerRequestFilter extends OncePerRequestFilter {
                 // 精确匹配
                 return true;
             }
+        }*/
         }
         return false;
     }
